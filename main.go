@@ -234,8 +234,8 @@ func main() {
 			GetTransactions(oConn),
 		))
 	}
-	headerText.SetText(fmt.Sprintf(" [green]> txtop[white]"))
-	footerText.SetText(fmt.Sprintf(" [yellow](esc/q) Quit[white]"))
+	headerText.SetText(fmt.Sprintln(" [green]> txtop[white]"))
+	footerText.SetText(fmt.Sprintln(" [yellow](esc/q) Quit[white]"))
 	flex.SetDirection(tview.FlexRow).
 		AddItem(headerText,
 			1,
