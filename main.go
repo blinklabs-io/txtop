@@ -165,7 +165,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 
 func GetSizes(oConn *ouroboros.Connection) string {
 	if oConn == nil {
-		return fmt.Sprint(" [green]> txtop[white]")
+		return " [green]> txtop[white]"
 	}
 	capacity, size, numberOfTxs, err := oConn.LocalTxMonitor().Client.GetSizes()
 	if err != nil {
@@ -181,10 +181,10 @@ func GetSizes(oConn *ouroboros.Connection) string {
 
 func GetTransactions(oConn *ouroboros.Connection) string {
 	if oConn == nil {
-		return fmt.Sprint(" [red]failed to connect to node")
+		return " [red]failed to connect to node"
 	}
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprint(" [white]Transactions:\n"))
+	sb.WriteString(" [white]Transactions:\n")
 	sb.WriteString(fmt.Sprintf(" [white]%-20s %s\n", "Size", "TxHash"))
 	for {
 		tx, err := oConn.LocalTxMonitor().Client.NextTx()
