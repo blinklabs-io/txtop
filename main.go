@@ -15,18 +15,16 @@
 package main
 
 import (
-	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
 	ouroboros "github.com/blinklabs-io/gouroboros"
-	"github.com/blinklabs-io/gouroboros/cbor"
+	"github.com/blinklabs-io/gouroboros/ledger"
 	"github.com/gdamore/tcell/v2"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rivo/tview"
-	"golang.org/x/crypto/blake2b"
 )
 
 var globalConfig = &Config{
@@ -187,26 +185,26 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 	sb.WriteString(" [white]Transactions:\n")
 	sb.WriteString(fmt.Sprintf(" [white]%-20s %s\n", "Size", "TxHash"))
 	for {
-		tx, err := oConn.LocalTxMonitor().Client.NextTx()
+		txRawBytes, err := oConn.LocalTxMonitor().Client.NextTx()
 		if err != nil {
 			sb.WriteString(fmt.Sprintf(" [red]ERROR: NextTx: %s\n", err))
 			return fmt.Sprint(sb.String())
 		}
-		if tx == nil {
+		if txRawBytes == nil {
 			break
 		}
-		size := len(tx)
-		var txUnwrap []cbor.RawMessage
-		_, err = cbor.Decode(tx, &txUnwrap)
+		size := len(txRawBytes)
+		txType, err := ledger.DetermineTransactionType(txRawBytes)
 		if err != nil {
-			sb.WriteString(fmt.Sprintf(" [red]ERROR: txUnwrap: %s", err))
+			sb.WriteString(fmt.Sprintf(" [red]ERROR: TxType: %s\n", err))
 			return fmt.Sprint(sb.String())
 		}
-		txBody := txUnwrap[0]
-		txIdHash := blake2b.Sum256(txBody)
-		txIdHex := hex.EncodeToString(txIdHash[:])
-
-		sb.WriteString(fmt.Sprintf(" [white]%-20d [blue]%s[white]\n", size, txIdHex))
+		tx, err := ledger.NewTransactionFromCbor(txType, txRawBytes)
+		if err != nil {
+			sb.WriteString(fmt.Sprintf(" [red]ERROR: Tx: %s\n", err))
+			return fmt.Sprint(sb.String())
+		}
+		sb.WriteString(fmt.Sprintf(" [white]%-20d [blue]%s[white]\n", size, tx.Hash()))
 	}
 	return fmt.Sprint(sb.String())
 }

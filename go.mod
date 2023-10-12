@@ -3,11 +3,10 @@ module github.com/blinklabs-io/txtop
 go 1.20
 
 require (
-	github.com/blinklabs-io/gouroboros v0.54.0
+	github.com/blinklabs-io/gouroboros v0.55.0
 	github.com/gdamore/tcell/v2 v2.6.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.0.0-20230928053139-9bc1d28d88a9
-	golang.org/x/crypto v0.14.0
 )
 
 require (
@@ -18,6 +17,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
