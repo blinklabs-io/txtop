@@ -30,7 +30,7 @@ import (
 var globalConfig = &Config{
 	App: AppConfig{
 		Network: "",
-		Refresh: 10,
+		Refresh: 3,
 		Retries: 3,
 	},
 	Node: NodeConfig{
@@ -49,10 +49,12 @@ var headerText = tview.NewTextView().
 	SetTextColor(tcell.ColorGreen)
 var footerText = tview.NewTextView().
 	SetDynamicColors(true).
-	SetTextColor(tcell.ColorGreen)
+	SetChangedFunc(func() { app.Draw() })
 var text = tview.NewTextView().
 	SetDynamicColors(true).
 	SetChangedFunc(func() { app.Draw() })
+
+var paused bool = false
 
 type Config struct {
 	App  AppConfig
@@ -163,7 +165,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 
 func GetSizes(oConn *ouroboros.Connection) string {
 	if oConn == nil {
-		return " [green]> txtop[white]"
+		return " [red]failed to connect to node"
 	}
 	capacity, size, numberOfTxs, err := oConn.LocalTxMonitor().Client.GetSizes()
 	if err != nil {
@@ -179,11 +181,11 @@ func GetSizes(oConn *ouroboros.Connection) string {
 
 func GetTransactions(oConn *ouroboros.Connection) string {
 	if oConn == nil {
-		return " [red]failed to connect to node"
+		return ""
 	}
 	var sb strings.Builder
-	sb.WriteString(" [white]Transactions:\n")
-	sb.WriteString(fmt.Sprintf(" [white]%-20s %s\n", "Size", "TxHash"))
+	// sb.WriteString(" [white]Transactions:\n")
+	sb.WriteString(fmt.Sprintf(" [white]%-20s %s\n", "Size:", "TxHash:"))
 	for {
 		txRawBytes, err := oConn.LocalTxMonitor().Client.NextTx()
 		if err != nil {
@@ -215,7 +217,7 @@ func main() {
 		fmt.Printf("failed to load config: %s", err)
 		os.Exit(1)
 	}
-	text.SetBorder(true)
+	// text.SetBorder(true)
 	errorChan := make(chan error)
 	go func() {
 		for {
@@ -232,8 +234,8 @@ func main() {
 			GetTransactions(oConn),
 		))
 	}
-	headerText.SetText(fmt.Sprintln(" [green]> txtop[white]"))
-	footerText.SetText(fmt.Sprintln(" [yellow](esc/q) Quit[white]"))
+	headerText.SetText(fmt.Sprintln(" > txtop"))
+	footerText.SetText(fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"))
 	flex.SetDirection(tview.FlexRow).
 		AddItem(headerText,
 			1,
@@ -248,6 +250,15 @@ func main() {
 			0,
 			false)
 	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Rune() == 112 { // p
+			paused = !paused
+			footerText.Clear()
+			if paused {
+				footerText.SetText(fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused)"))
+				return event
+			}
+			footerText.SetText(fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"))
+		}
 		if event.Rune() == 113 || event.Key() == tcell.KeyEscape { // q
 			app.Stop()
 		}
@@ -256,17 +267,21 @@ func main() {
 	pages.AddPage("Main", flex, true, true)
 	go func(cfg *Config) {
 		for {
-			time.Sleep(time.Second * time.Duration(cfg.App.Refresh))
-			oConn, err := GetConnection(errorChan)
-			if err != nil {
-				text.Clear()
-				text.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
+			if paused {
+				// do nothing
 			} else {
-				text.Clear()
-				text.SetText(fmt.Sprintf("%s\n%s",
-					GetSizes(oConn),
-					GetTransactions(oConn),
-				))
+				time.Sleep(time.Second * time.Duration(cfg.App.Refresh))
+				oConn, err := GetConnection(errorChan)
+				if err != nil {
+					text.Clear()
+					text.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
+				} else {
+					text.Clear()
+					text.SetText(fmt.Sprintf("%s\n%s",
+						GetSizes(oConn),
+						GetTransactions(oConn),
+					))
+				}
 			}
 		}
 	}(cfg)
