@@ -129,9 +129,15 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 		return nil, fmt.Errorf("failure creating ouroboros connection: %s", err)
 	}
 	if cfg.Node.Address != "" && cfg.Node.Port > 0 {
-		err := oConn.Dial("tcp", fmt.Sprintf("%s:%d", cfg.Node.Address, cfg.Node.Port))
+		err := oConn.Dial(
+			"tcp",
+			fmt.Sprintf("%s:%d", cfg.Node.Address, cfg.Node.Port),
+		)
 		if err != nil {
-			return nil, fmt.Errorf("failure connecting to node via TCP: %s", err)
+			return nil, fmt.Errorf(
+				"failure connecting to node via TCP: %s",
+				err,
+			)
 		}
 	} else if cfg.Node.SocketPath != "" {
 		_, err := os.Stat(cfg.Node.SocketPath)
@@ -206,7 +212,9 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			sb.WriteString(fmt.Sprintf(" [red]ERROR: Tx: %s\n", err))
 			return fmt.Sprint(sb.String())
 		}
-		sb.WriteString(fmt.Sprintf(" [white]%-20d [blue]%s[white]\n", size, tx.Hash()))
+		sb.WriteString(
+			fmt.Sprintf(" [white]%-20d [blue]%s[white]\n", size, tx.Hash()),
+		)
 	}
 	return fmt.Sprint(sb.String())
 }
@@ -235,7 +243,9 @@ func main() {
 		))
 	}
 	headerText.SetText(fmt.Sprintln(" > txtop"))
-	footerText.SetText(fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"))
+	footerText.SetText(
+		fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"),
+	)
 	flex.SetDirection(tview.FlexRow).
 		AddItem(headerText,
 			1,
@@ -254,10 +264,18 @@ func main() {
 			paused = !paused
 			footerText.Clear()
 			if paused {
-				footerText.SetText(fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused)"))
+				footerText.SetText(
+					fmt.Sprintln(
+						" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused)",
+					),
+				)
 				return event
 			}
-			footerText.SetText(fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"))
+			footerText.SetText(
+				fmt.Sprintln(
+					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause",
+				),
+			)
 		}
 		if event.Rune() == 113 || event.Key() == tcell.KeyEscape { // q
 			app.Stop()
