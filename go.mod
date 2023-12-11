@@ -3,7 +3,7 @@ module github.com/blinklabs-io/txtop
 go 1.20
 
 require (
-	github.com/blinklabs-io/gouroboros v0.67.0
+	github.com/blinklabs-io/gouroboros v0.67.1
 	github.com/gdamore/tcell/v2 v2.6.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.0.0-20230928053139-9bc1d28d88a9
