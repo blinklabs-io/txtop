@@ -20,8 +20,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/blinklabs-io/cardano-models"
 	ouroboros "github.com/blinklabs-io/gouroboros"
 	"github.com/blinklabs-io/gouroboros/ledger"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/gdamore/tcell/v2"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rivo/tview"
@@ -191,7 +193,9 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 	}
 	var sb strings.Builder
 	// sb.WriteString(" [white]Transactions:\n")
-	sb.WriteString(fmt.Sprintf(" [white]%-20s %s\n", "Size:", "TxHash:"))
+	sb.WriteString(
+		fmt.Sprintf(" [white]%-10s %-10s %s\n", "Size:", "Icon:", "TxHash:"),
+	)
 	for {
 		txRawBytes, err := oConn.LocalTxMonitor().Client.NextTx()
 		if err != nil {
@@ -212,8 +216,42 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			sb.WriteString(fmt.Sprintf(" [red]ERROR: Tx: %s\n", err))
 			return fmt.Sprint(sb.String())
 		}
+		// Check if Tx has metadata and compare against our list
+		var icon string
+		if tx.Metadata() != nil {
+			mdCbor := tx.Metadata().Cbor()
+			var msgMetadata models.Cip20Metadata
+			_ = cbor.Unmarshal(mdCbor, &msgMetadata)
+			if msgMetadata.Num674.Msg != nil {
+				// Only check first line
+				switch msgMetadata.Num674.Msg[0] {
+				case "Dexhunter Trade":
+					icon = "🐉"
+				case "Minswap: Deposit Order",
+					"Minswap: MasterChef",
+					"Minswap: Order Executed",
+					"Minswap: Swap Exact In Order",
+					"Minswap: V2 Harvest reward",
+					"Minswap: V2 Stake liquidity",
+					"Minswap: Zap Order":
+					icon = "🐱"
+				case "SSP: Swap Request":
+					icon = "🍨"
+				}
+			}
+		}
+
+		spaces := "10"
+		if icon != "" {
+			spaces = "9"
+		}
 		sb.WriteString(
-			fmt.Sprintf(" [white]%-20d [blue]%s[white]\n", size, tx.Hash()),
+			fmt.Sprintf(
+				" [white]%-10d %-"+spaces+"s [blue]%s[white]\n",
+				size,
+				icon,
+				tx.Hash(),
+			),
 		)
 	}
 	return fmt.Sprint(sb.String())
