@@ -226,7 +226,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				// Only check first line
 				switch msgMetadata.Num674.Msg[0] {
 				case "Dexhunter Trade":
-					icon = "🐉"
+					icon = "🏹"
 				case "Minswap: Deposit Order",
 					"Minswap: MasterChef",
 					"Minswap: Order Executed",
