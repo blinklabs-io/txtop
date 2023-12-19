@@ -231,6 +231,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 					"Minswap: MasterChef",
 					"Minswap: Order Executed",
 					"Minswap: Swap Exact In Order",
+					"Minswap: Swap Exact Out Order",
 					"Minswap: V2 Harvest reward",
 					"Minswap: V2 Stake liquidity",
 					"Minswap: Zap Order":
