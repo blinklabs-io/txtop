@@ -216,8 +216,8 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			sb.WriteString(fmt.Sprintf(" [red]ERROR: Tx: %s\n", err))
 			return fmt.Sprint(sb.String())
 		}
-		// Check if Tx has metadata and compare against our list
 		var icon string
+		// Check if Tx has metadata and compare against our list
 		if tx.Metadata() != nil {
 			mdCbor := tx.Metadata().Cbor()
 			var msgMetadata models.Cip20Metadata
@@ -225,8 +225,10 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			if msgMetadata.Num674.Msg != nil {
 				// Only check first line
 				switch msgMetadata.Num674.Msg[0] {
+				// Dexhunter
 				case "Dexhunter Trade":
 					icon = "🏹"
+				// Minswap
 				case "Minswap: Deposit Order",
 					"Minswap: MasterChef",
 					"Minswap: Order Executed",
@@ -236,9 +238,46 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 					"Minswap: V2 Stake liquidity",
 					"Minswap: Zap Order":
 					icon = "🐱"
+				// Sundae
 				case "SSP: Swap Request":
 					icon = "🍨"
 				}
+			}
+		}
+		// Check if output includes known script addresses
+		for _, output := range tx.Outputs() {
+			switch output.Address().String() {
+			// Dripdropz
+			case "addr1v8pr9mwnqarw808gtllvmlxvk70hnszrukjeqfstr9t9g5crud8c4":
+				icon = "🚰"
+			// Indigo
+			case "addr1w80ptp0qgmcklhmeweesqgeurtlma8fsxsr9dt8au30fzss0czhl9",
+				"addr1w92w34pys9h4h02zxdfsp8lhcvdd5t9aaln9z96szsgh73scty4aj",
+				"addr1w8q673nyx6vtcules4aqess7e9yuu6geja95xhg90hzy3wqpsjzzz",
+				"addr1wxj88juwkzmpcqacd9hua2cur2yl50kgx3tjs588c2470qc2ftfae":
+				icon = "👁️ " // space because it's only 1 char wide
+			// Liqwid
+			case "addr1wx6htk5hfmr4dw32lhxdcp7t6xpe4jhs5fxylq90mqwnldsvr87c6",
+				"addr1wyn2aflq8ff7xaxpmqk9vz53ks28hz256tkyaj739rsvrrq3u5ft3",
+				"addr1w8arvq7j9qlrmt0wpdvpp7h4jr4fmfk8l653p9t907v2nsss7w7r4":
+				icon = "💧"
+			// Optim
+			case "addr1zywj8y96k38kye7qz329dhp0t782ykr0ev92mtz4yhv6gph8ucsr8rpyzewcf9jyf7gmjj052dednasdeznehw7aqc7q0z7vn2":
+				icon = "🅾️"
+			// Spectrum
+			case "addr1wyr4uz0tp75fu8wrg6gm83t20aphuc9vt6n8kvu09ctkugqpsrmeh",
+				"addr1x94ec3t25egvhqy2n265xfhq882jxhkknurfe9ny4rl9k6dj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrst84slu",
+				"addr1x8nz307k3sr60gu0e47cmajssy4fmld7u493a4xztjrll0aj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrswgxsta",
+				"addr1wynp362vmvr8jtc946d3a3utqgclfdl5y9d3kn849e359hsskr20n":
+				icon = "🌈"
+			// Sundae
+			case "addr1wxaptpmxcxawvr3pzlhgnpmzz3ql43n2tc8mn3av5kx0yzs09tqh8",
+				"addr1w9qzpelu9hn45pefc0xr4ac4kdxeswq7pndul2vuj59u8tqaxdznu",
+				"addr1w9jx45flh83z6wuqypyash54mszwmdj8r64fydafxtfc6jgrw4rm3":
+				icon = "🍨"
+			// Wingriders
+			case "addr1wxr2a8htmzuhj39y2gq7ftkpxv98y2g67tg8zezthgq4jkg0a4ul4":
+				icon = "🦸"
 			}
 		}
 
