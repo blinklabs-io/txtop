@@ -52,6 +52,9 @@ var headerText = tview.NewTextView().
 var footerText = tview.NewTextView().
 	SetDynamicColors(true).
 	SetChangedFunc(func() { app.Draw() })
+var legendText = tview.NewTextView().
+	SetDynamicColors(true).
+	SetTextColor(tcell.ColorGreen)
 var text = tview.NewTextView().
 	SetDynamicColors(true).
 	SetChangedFunc(func() { app.Draw() })
@@ -324,6 +327,24 @@ func main() {
 	footerText.SetText(
 		fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"),
 	)
+	legendText.SetText(
+		fmt.Sprintf(" Legend: [white]%s\n %s",
+			fmt.Sprintf("%13s %13s %13s %13s %13s",
+				"🏹 Dexhunter",
+				"🚰 DripDropz",
+				"👁️ Indigo",
+				"💧 Liqwid",
+				"🐱 Minswap",
+			),
+			// Text formatting the wrong way for the win
+			fmt.Sprintf("%18s %16s %13s %17s",
+				"🅾️ Optim",
+				"🌈 Spectrum",
+				"🍨 Sundae",
+				"🦸 Wingriders",
+			),
+		),
+	)
 	flex.SetDirection(tview.FlexRow).
 		AddItem(headerText,
 			1,
@@ -333,6 +354,10 @@ func main() {
 			0,
 			6,
 			true).
+		AddItem(legendText,
+			2,
+			0,
+			false).
 		AddItem(footerText,
 			2,
 			0,
