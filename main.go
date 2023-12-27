@@ -271,6 +271,9 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1w8q673nyx6vtcules4aqess7e9yuu6geja95xhg90hzy3wqpsjzzz",
 				"addr1wxj88juwkzmpcqacd9hua2cur2yl50kgx3tjs588c2470qc2ftfae":
 				icon = "👁️ " // space because it's only 1 char wide
+			// JPG
+			case "addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83s0ykeehchz2wtspks905plm":
+				icon = "🦛"
 			// Liqwid
 			case "addr1wx6htk5hfmr4dw32lhxdcp7t6xpe4jhs5fxylq90mqwnldsvr87c6",
 				"addr1wyn2aflq8ff7xaxpmqk9vz53ks28hz256tkyaj739rsvrrq3u5ft3",
@@ -351,15 +354,16 @@ func main() {
 	)
 	legendText.SetText(
 		fmt.Sprintf(" Legend: [white]%s\n %s",
-			fmt.Sprintf("%13s %13s %13s %13s %13s",
+			fmt.Sprintf("%12s %12s %12s %12s %12s %12s",
 				"🏹 Dexhunter",
 				"🚰 DripDropz",
 				"👁️ Indigo",
+				"🦛 JPGstore",
 				"💧 Liqwid",
 				"🐱 Minswap",
 			),
 			// Text formatting the wrong way for the win
-			fmt.Sprintf("%18s %16s %13s %13s %16s",
+			fmt.Sprintf("%17s %15s %12s %10s %18s",
 				"🅾️ Optim",
 				"🌈 Spectrum",
 				"🍨 Sundae",
