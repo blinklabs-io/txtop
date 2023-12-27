@@ -61,6 +61,18 @@ var text = tview.NewTextView().
 
 var paused bool = false
 
+// These are populated at build time
+var Version string
+var CommitHash string
+
+func GetVersionString() string {
+	if Version != "" {
+		return fmt.Sprintf("%s (commit %s)", Version, CommitHash)
+	} else {
+		return fmt.Sprintf("devel (commit %s)", CommitHash)
+	}
+}
+
 type Config struct {
 	App  AppConfig
 	Node NodeConfig
@@ -333,7 +345,7 @@ func main() {
 			GetTransactions(oConn),
 		))
 	}
-	headerText.SetText(fmt.Sprintln(" > txtop"))
+	headerText.SetText(fmt.Sprintln(" > txtop -", GetVersionString()))
 	footerText.SetText(
 		fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"),
 	)

@@ -7,12 +7,8 @@ GO_FILES=$(shell find $(ROOT_DIR) -name '*.go')
 # Gather list of expected binaries
 BINARIES=txtop
 
-# Extract Go module name from go.mod
-GOMODULE=$(shell grep ^module $(ROOT_DIR)/go.mod | awk '{ print $$2 }')
-
 # Set version strings based on git tag and current ref
-#GO_LDFLAGS=-ldflags "-s -w -X '$(GOMODULE)/internal/version.Version=$(shell git describe --tags --exact-match 2>/dev/null)' -X '$(GOMODULE)/internal/version.CommitHash=$(shell git rev-parse --short HEAD)'"
-GO_LDFLAGS=-ldflags "-s -w"
+GO_LDFLAGS=-ldflags "-s -w -X 'main.Version=$(shell git describe --tags --exact-match 2>/dev/null)' -X 'main.CommitHash=$(shell git rev-parse --short HEAD)'"
 
 .PHONY: build mod-tidy clean test
 
