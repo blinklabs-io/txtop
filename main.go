@@ -283,6 +283,16 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				icon = "🦸"
 			}
 		}
+		// Check if output includes known stake addresses
+		for _, output := range tx.Outputs() {
+			if output.Address().StakeAddress() != nil {
+				switch output.Address().StakeAddress().String() {
+				// Seal's Vending Machine
+				case "stake1u8ffzkegp8h48mare3g3ntf3xmjce3jqptsdtj38ee3yh3c9t4uum":
+					icon = "🦭"
+				}
+			}
+		}
 
 		spaces := "10"
 		if icon != "" {
@@ -337,10 +347,11 @@ func main() {
 				"🐱 Minswap",
 			),
 			// Text formatting the wrong way for the win
-			fmt.Sprintf("%18s %16s %13s %17s",
+			fmt.Sprintf("%18s %16s %13s %13s %16s",
 				"🅾️ Optim",
 				"🌈 Spectrum",
 				"🍨 Sundae",
+				"🦭 SealVM",
 				"🦸 Wingriders",
 			),
 		),
