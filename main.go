@@ -60,6 +60,7 @@ var text = tview.NewTextView().
 	SetChangedFunc(func() { app.Draw() })
 
 var paused bool = false
+var content string
 
 // These are populated at build time
 var Version string
@@ -424,11 +425,15 @@ func main() {
 					text.Clear()
 					text.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
 				} else {
-					text.Clear()
-					text.SetText(fmt.Sprintf("%s\n%s",
+					tmpText := fmt.Sprintf("%s\n%s",
 						GetSizes(oConn),
 						GetTransactions(oConn),
-					))
+					)
+					if tmpText != "" && tmpText != content {
+						content = tmpText
+						text.Clear()
+						text.SetText(content)
+					}
 				}
 			}
 		}
