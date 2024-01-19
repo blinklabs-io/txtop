@@ -246,6 +246,9 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 					icon = "🏹"
 				// Minswap
 				case "Minswap: Deposit Order",
+					"Minswap: Cancel Order",
+					"Minswap: Launch Bowl Redemption",
+					"Minswap: LBE Deposit ADA",
 					"Minswap: MasterChef",
 					"Minswap: Order Executed",
 					"Minswap: Swap Exact In Order",
@@ -254,6 +257,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 					"Minswap: Swap Exact Out Limit Order",
 					"Minswap: V2 Harvest reward",
 					"Minswap: V2 Stake liquidity",
+					"Minswap: Withdraw Order",
 					"Minswap: Zap Order":
 					icon = "🐱"
 				// Sundae
