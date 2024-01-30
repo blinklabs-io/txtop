@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/blinklabs-io/cardano-models v0.2.0
-	github.com/blinklabs-io/gouroboros v0.69.3
+	github.com/blinklabs-io/gouroboros v0.69.5
 	github.com/fxamacker/cbor/v2 v2.5.0
 	github.com/gdamore/tcell/v2 v2.7.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -18,8 +18,8 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 )
