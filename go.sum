@@ -1,7 +1,7 @@
 github.com/blinklabs-io/cardano-models v0.2.0 h1:fQ2vkvMLFgQodtFpYE73i+6+eNN5vaIB3GBIys8FsyI=
 github.com/blinklabs-io/cardano-models v0.2.0/go.mod h1:iH8IqSca4WzFQIAT3Ssd3TviILfoCgaJQ8mc3JrIvwE=
-github.com/blinklabs-io/gouroboros v0.69.5 h1:oFTObwPchrzZAunNA/+Y6g5NwMZQhA1Zj+iZGzX4TsU=
-github.com/blinklabs-io/gouroboros v0.69.5/go.mod h1:ecxtryJb+vIeVizQl4nYJr0tVdyIgOTze7R9xeGqFu4=
+github.com/blinklabs-io/gouroboros v0.70.1 h1:Jj+d8yoRRQnWjv3qwUvicavyi2AGdhDqCxNVWXhZhb8=
+github.com/blinklabs-io/gouroboros v0.70.1/go.mod h1:ecxtryJb+vIeVizQl4nYJr0tVdyIgOTze7R9xeGqFu4=
 github.com/fxamacker/cbor/v2 v2.5.0 h1:oHsG0V/Q6E/wqTS2O1Cozzsy69nqCiguo5Q1a1ADivE=
 github.com/fxamacker/cbor/v2 v2.5.0/go.mod h1:TA1xS00nchWmaBnEIxPSE5oHLuJBAVvqrtAnWBwBCVo=
 github.com/gdamore/encoding v1.0.0 h1:+7OoQ1Bc6eTm5niUzBa0Ctsh6JbMW6Ra+YNuAtDBdko=
