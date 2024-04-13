@@ -289,6 +289,9 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			// Optim
 			case "addr1zywj8y96k38kye7qz329dhp0t782ykr0ev92mtz4yhv6gph8ucsr8rpyzewcf9jyf7gmjj052dednasdeznehw7aqc7q0z7vn2":
 				icon = "🅾️"
+			// Silk Toad
+			case "addr1w9d85mfr73mk8pr5erd46d7e7whcah2tzcyqd5rr4hv2amg9sxgl8":
+				icon = "🕺"
 			// Spectrum
 			case "addr1wyr4uz0tp75fu8wrg6gm83t20aphuc9vt6n8kvu09ctkugqpsrmeh",
 				"addr1x94ec3t25egvhqy2n265xfhq882jxhkknurfe9ny4rl9k6dj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrst84slu",
