@@ -3,7 +3,7 @@ module github.com/blinklabs-io/txtop
 go 1.21
 
 require (
-	github.com/blinklabs-io/cardano-models v0.3.1
+	github.com/blinklabs-io/cardano-models v0.3.2
 	github.com/blinklabs-io/gouroboros v0.79.0
 	github.com/fxamacker/cbor/v2 v2.6.0
 	github.com/gdamore/tcell/v2 v2.7.4
