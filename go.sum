@@ -1,5 +1,5 @@
-github.com/blinklabs-io/cardano-models v0.3.1 h1:CtojPKiiOnd8o3NCsPZM3HYkyQ9mSVqKUz7gFKTVfZU=
-github.com/blinklabs-io/cardano-models v0.3.1/go.mod h1:Z2t4gGSyLGXMRS+BkhED4AUGDIh5rI8NTNInZYBT7eg=
+github.com/blinklabs-io/cardano-models v0.3.2 h1:3kH0sy/HhL0U2Go9yrlAlDzoT9BhjKExxzWFmoWUAxQ=
+github.com/blinklabs-io/cardano-models v0.3.2/go.mod h1:SV1SDNjwJ+Oq3qu7uGgEXeRnE+fNWgKBgSBY80gfIJI=
 github.com/blinklabs-io/gouroboros v0.79.0 h1:baURwZB1Br7d0jPi5Da3M/3ulNe/R/2tuf8QyTx4NPw=
 github.com/blinklabs-io/gouroboros v0.79.0/go.mod h1:wqeaBdd92uMfBdtLrpbY8HtWyDu0kP+U/wBylh/b9TM=
 github.com/blinklabs-io/ouroboros-mock v0.3.0 h1:6VRWyhAv0k7nQEgzFpuqhS/n8OM+OAaLN/sCT5K2Hbc=
