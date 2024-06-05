@@ -269,6 +269,10 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 		// Check if output includes known script addresses
 		for _, output := range tx.Outputs() {
 			switch output.Address().String() {
+			// Axo
+			case "addr1w8ytzffgwpf94dy20kgw72gn9ujjhqu3md34vhggenkakeszhjpl3",
+				"addr1z8ytzffgwpf94dy20kgw72gn9ujjhqu3md34vhggenkakejv7ncp3yppt0gcr50u60y43x32fgadhnl35u9hfqyql2pqr3p0j4":
+				icon = "❌"
 			// Dripdropz
 			case "addr1v8pr9mwnqarw808gtllvmlxvk70hnszrukjeqfstr9t9g5crud8c4":
 				icon = "🚰"
