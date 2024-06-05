@@ -304,6 +304,10 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1w9jx45flh83z6wuqypyash54mszwmdj8r64fydafxtfc6jgrw4rm3",
 				"addr1z8ax5k9mutg07p2ngscu3chsauktmstq92z9de938j8nqal9r9z8yaghysf05atjyv79t73lercjdqnejetxm307m49qdfqcxd":
 				icon = "🍨"
+			// VyFinance
+			case "addr1w8ll74xa05dkn69n3rmp93h8maphmms2408nt0nyruarzvqr9zf64",
+				"addr1z976yepnveus5uddth7qd66kn6cuzd7tccjd39dfdayc7lnend0q3h5twed567pu236a0sf6vfgruxgpr4rkxryyx0zqa550y7":
+				icon = "🔵"
 			// Wingriders
 			case "addr1wxr2a8htmzuhj39y2gq7ftkpxv98y2g67tg8zezthgq4jkg0a4ul4":
 				icon = "🦸"
