@@ -1,4 +1,4 @@
-// Copyright 2023 Blink Labs Software
+// Copyright 2024 Blink Labs Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -247,8 +247,10 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				// Minswap
 				case "Minswap: Deposit Order",
 					"Minswap: Cancel Order",
+					"Minswap: Create Pool",
 					"Minswap: Launch Bowl Redemption",
 					"Minswap: LBE Deposit ADA",
+					"Minswap: Liquidity Migration",
 					"Minswap: MasterChef",
 					"Minswap: Order Executed",
 					"Minswap: Swap Exact In Order",
@@ -290,6 +292,9 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1wyn2aflq8ff7xaxpmqk9vz53ks28hz256tkyaj739rsvrrq3u5ft3",
 				"addr1w8arvq7j9qlrmt0wpdvpp7h4jr4fmfk8l653p9t907v2nsss7w7r4":
 				icon = "💧"
+			// Minswap
+			case "addr1z84q0denmyep98ph3tmzwsmw0j7zau9ljmsqx6a4rvaau66j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq777e2a":
+				icon = "🐱"
 			// Optim
 			case "addr1zywj8y96k38kye7qz329dhp0t782ykr0ev92mtz4yhv6gph8ucsr8rpyzewcf9jyf7gmjj052dednasdeznehw7aqc7q0z7vn2":
 				icon = "🅾️"
