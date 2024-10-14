@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/blinklabs-io/cardano-models v0.3.7
-	github.com/blinklabs-io/gouroboros v0.98.0
+	github.com/blinklabs-io/gouroboros v0.99.0
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/gdamore/tcell/v2 v2.7.4
 	github.com/kelseyhightower/envconfig v1.4.0
