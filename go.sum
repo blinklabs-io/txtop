@@ -1,7 +1,7 @@
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
-github.com/blinklabs-io/cardano-models v0.3.7 h1:KkIFnimGf/5JLL8JPsH7hbfzUrC8qfHBYv3fx+AJSb4=
-github.com/blinklabs-io/cardano-models v0.3.7/go.mod h1:gnL+MVNX7b4bxH7AjeV1xJBbwIqwvXhJDOWiVt5ji50=
+github.com/blinklabs-io/cardano-models v0.3.8 h1:Ic+gNeTwAj2etmkRHQbWg3TqAvd8yvVdXBrTy9Ewf5Y=
+github.com/blinklabs-io/cardano-models v0.3.8/go.mod h1:uDEiazZ7jdZTKNJALwRQ7t7k2plm+d9zIqXwi1tWNtw=
 github.com/blinklabs-io/gouroboros v0.102.0 h1:SSw1SW5a/eunPJdwJHARur/dlGdTrLEq5ScRFZjhen0=
 github.com/blinklabs-io/gouroboros v0.102.0/go.mod h1:okgJskD4KXG5itGM95gUl6J+rKbURzaP++HTeCokgkM=
 github.com/blinklabs-io/ouroboros-mock v0.3.4 h1:codPfiI5vLeD6YdhKL5VwYSzy2N3Dsgx6xjcLsqFaJQ=
