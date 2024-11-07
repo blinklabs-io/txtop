@@ -23,6 +23,7 @@ import (
 	models "github.com/blinklabs-io/cardano-models"
 	ouroboros "github.com/blinklabs-io/gouroboros"
 	"github.com/blinklabs-io/gouroboros/ledger"
+	lcommon "github.com/blinklabs-io/gouroboros/ledger/common"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/gdamore/tcell/v2"
 	"github.com/kelseyhightower/envconfig"
@@ -335,6 +336,24 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			}
 		}
 
+		// Check if Tx has certificates and compare against known types
+		if tx.Certificates() != nil {
+			for _, certificate := range tx.Certificates() {
+				eject := false
+				switch certificate.(type) {
+				case *lcommon.StakeRegistrationCertificate, *lcommon.StakeDeregistrationCertificate, *lcommon.StakeDelegationCertificate:
+					icon = "🥩"
+					eject = true
+				case *lcommon.PoolRegistrationCertificate, *lcommon.PoolRetirementCertificate:
+					icon = "🏊"
+					eject = true
+				}
+				if eject {
+					break
+				}
+			}
+		}
+
 		spaces := "10"
 		if icon != "" {
 			spaces = "9"
@@ -379,7 +398,7 @@ func main() {
 		fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"),
 	)
 	legendText.SetText(
-		fmt.Sprintf(" Legend: [white]%s\n %s",
+		fmt.Sprintf(" Legend: [white]%s\n %s\n %s",
 			fmt.Sprintf("%12s %12s %12s %12s %12s %12s",
 				"🏹 Dexhunter",
 				"🚰 DripDropz",
@@ -396,6 +415,10 @@ func main() {
 				"🦭 SealVM",
 				"🦸 Wingriders",
 			),
+			fmt.Sprintf("%18s %9s",
+				"🥩 Staking",
+				"🏊 SPOs",
+			),
 		),
 	)
 	flex.SetDirection(tview.FlexRow).
@@ -408,7 +431,7 @@ func main() {
 			6,
 			true).
 		AddItem(legendText,
-			2,
+			3,
 			0,
 			false).
 		AddItem(footerText,
