@@ -10,21 +10,21 @@ require (
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/gdamore/tcell/v2 v2.7.4
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/rivo/tview v0.0.0-20230928053139-9bc1d28d88a9
+	github.com/rivo/tview v0.0.0-20241103174730-c76f7879f592
 )
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/gdamore/encoding v1.0.0 // indirect
+	github.com/gdamore/encoding v1.0.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.22.1 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
-	github.com/mattn/go-runewidth v0.0.15 // indirect
-	github.com/rivo/uniseg v0.4.3 // indirect
+	github.com/mattn/go-runewidth v0.0.16 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/utxorpc/go-codegen v0.12.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	golang.org/x/crypto v0.29.0 // indirect
