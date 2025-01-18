@@ -6,7 +6,7 @@ require (
 	github.com/blinklabs-io/cardano-models v0.4.0
 	github.com/blinklabs-io/gouroboros v0.107.1
 	github.com/fxamacker/cbor/v2 v2.7.0
-	github.com/gdamore/tcell/v2 v2.7.4
+	github.com/gdamore/tcell/v2 v2.8.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.0.0-20241103174730-c76f7879f592
 )
@@ -27,8 +27,8 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/term v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 )
