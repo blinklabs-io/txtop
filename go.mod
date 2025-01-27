@@ -4,7 +4,7 @@ go 1.22.11
 
 require (
 	github.com/blinklabs-io/cardano-models v0.4.0
-	github.com/blinklabs-io/gouroboros v0.108.0
+	github.com/blinklabs-io/gouroboros v0.108.1
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/gdamore/tcell/v2 v2.8.1
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -13,6 +13,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/btcsuite/btcd/btcutil v1.1.3 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gdamore/encoding v1.0.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
