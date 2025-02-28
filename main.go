@@ -1,4 +1,4 @@
-// Copyright 2024 Blink Labs Software
+// Copyright 2025 Blink Labs Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -130,7 +131,7 @@ func (c *Config) populateNetworkMagic() error {
 			c.Node.NetworkMagic = uint32(network.NetworkMagic)
 			return nil
 		} else {
-			return fmt.Errorf("unable to set network magic")
+			return errors.New("unable to set network magic")
 		}
 	}
 	return nil
@@ -181,9 +182,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 			)
 		}
 	} else {
-		return nil, fmt.Errorf(
-			"specify either the UNIX socket path or the address/port",
-		)
+		return nil, errors.New("specify either the UNIX socket path or the address/port")
 	}
 	return oConn, nil
 }
@@ -217,7 +216,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 		txRawBytes, err := oConn.LocalTxMonitor().Client.NextTx()
 		if err != nil {
 			sb.WriteString(fmt.Sprintf(" [red]ERROR: NextTx: %s\n", err))
-			return fmt.Sprint(sb.String())
+			return sb.String()
 		}
 		if txRawBytes == nil {
 			break
@@ -226,12 +225,12 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 		txType, err := ledger.DetermineTransactionType(txRawBytes)
 		if err != nil {
 			sb.WriteString(fmt.Sprintf(" [red]ERROR: TxType: %s\n", err))
-			return fmt.Sprint(sb.String())
+			return sb.String()
 		}
 		tx, err := ledger.NewTransactionFromCbor(txType, txRawBytes)
 		if err != nil {
 			sb.WriteString(fmt.Sprintf(" [red]ERROR: Tx: %s\n", err))
-			return fmt.Sprint(sb.String())
+			return sb.String()
 		}
 		var icon string
 		// Check if Tx has metadata and compare against our list
@@ -367,7 +366,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			),
 		)
 	}
-	return fmt.Sprint(sb.String())
+	return sb.String()
 }
 
 func main() {
