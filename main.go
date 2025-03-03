@@ -98,7 +98,7 @@ type NodeConfig struct {
 func LoadConfig() (*Config, error) {
 	err := envconfig.Process("txtop", globalConfig)
 	if err != nil {
-		return nil, fmt.Errorf("error processing environment: %s", err)
+		return nil, fmt.Errorf("error processing environment: %w", err)
 	}
 	if err := globalConfig.populateNetworkMagic(); err != nil {
 		return nil, err
@@ -146,7 +146,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 		ouroboros.WithKeepAlive(true),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failure creating ouroboros connection: %s", err)
+		return nil, fmt.Errorf("failure creating ouroboros connection: %w", err)
 	}
 	if cfg.Node.Address != "" && cfg.Node.Port > 0 {
 		err := oConn.Dial(
@@ -155,7 +155,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 		)
 		if err != nil {
 			return nil, fmt.Errorf(
-				"failure connecting to node via TCP: %s",
+				"failure connecting to node via TCP: %w",
 				err,
 			)
 		}
@@ -169,7 +169,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 				)
 			} else {
 				return nil, fmt.Errorf(
-					"unknown error checking if node socket path exists: %s",
+					"unknown error checking if node socket path exists: %w",
 					err,
 				)
 			}
@@ -177,7 +177,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 		err = oConn.Dial("unix", cfg.Node.SocketPath)
 		if err != nil {
 			return nil, fmt.Errorf(
-				"failure connecting to node via UNIX socket: %s",
+				"failure connecting to node via UNIX socket: %w",
 				err,
 			)
 		}
