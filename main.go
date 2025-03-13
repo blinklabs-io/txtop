@@ -44,29 +44,38 @@ var globalConfig = &Config{
 	},
 }
 
-var app = tview.NewApplication()
-var pages = tview.NewPages()
-var flex = tview.NewFlex()
+var (
+	app   = tview.NewApplication()
+	pages = tview.NewPages()
+	flex  = tview.NewFlex()
+)
 
 var headerText = tview.NewTextView().
 	SetDynamicColors(true).
 	SetTextColor(tcell.ColorGreen)
+
 var footerText = tview.NewTextView().
 	SetDynamicColors(true).
 	SetChangedFunc(func() { app.Draw() })
+
 var legendText = tview.NewTextView().
 	SetDynamicColors(true).
 	SetTextColor(tcell.ColorGreen)
+
 var text = tview.NewTextView().
 	SetDynamicColors(true).
 	SetChangedFunc(func() { app.Draw() })
 
-var paused bool = false
-var content string
+var (
+	paused  bool = false
+	content string
+)
 
 // These are populated at build time
-var Version string
-var CommitHash string
+var (
+	Version    string
+	CommitHash string
+)
 
 func GetVersionString() string {
 	if Version != "" {
