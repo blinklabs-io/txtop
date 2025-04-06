@@ -2,9 +2,11 @@ module github.com/blinklabs-io/txtop
 
 go 1.23.6
 
+toolchain go1.24.1
+
 require (
 	github.com/blinklabs-io/cardano-models v0.5.0
-	github.com/blinklabs-io/gouroboros v0.113.1
+	github.com/blinklabs-io/gouroboros v0.115.2
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/gdamore/tcell/v2 v2.8.1
 	github.com/kelseyhightower/envconfig v1.4.0
