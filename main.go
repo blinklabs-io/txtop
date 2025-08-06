@@ -355,7 +355,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				case *lcommon.PoolRegistrationCertificate, *lcommon.PoolRetirementCertificate:
 					icon = "🏊"
 					eject = true
-				case *lcommon.VoteDelegationCertificate, *lcommon.StakeVoteDelegationCertificate, *lcommon.StakeRegistrationDelegationCertificate, *lcommon.VoteRegistrationDelegationCertificate, *lcommon.StakeVoteRegistrationDelegationCertificate,
+				case *lcommon.VoteDelegationCertificate, *lcommon.StakeVoteDelegationCertificate, *lcommon.VoteRegistrationDelegationCertificate, *lcommon.StakeVoteRegistrationDelegationCertificate,
 					*lcommon.AuthCommitteeHotCertificate, *lcommon.ResignCommitteeColdCertificate, *lcommon.RegistrationDrepCertificate, *lcommon.DeregistrationDrepCertificate, *lcommon.UpdateDrepCertificate:
 					icon = "🏛️"
 					eject = true
