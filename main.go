@@ -355,6 +355,10 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				case *lcommon.PoolRegistrationCertificate, *lcommon.PoolRetirementCertificate:
 					icon = "🏊"
 					eject = true
+				case *lcommon.VoteDelegationCertificate, *lcommon.StakeVoteDelegationCertificate, *lcommon.VoteRegistrationDelegationCertificate, *lcommon.StakeVoteRegistrationDelegationCertificate,
+					*lcommon.AuthCommitteeHotCertificate, *lcommon.ResignCommitteeColdCertificate, *lcommon.RegistrationDrepCertificate, *lcommon.DeregistrationDrepCertificate, *lcommon.UpdateDrepCertificate:
+					icon = "🏛️"
+					eject = true
 				}
 				if eject {
 					break
@@ -423,9 +427,10 @@ func main() {
 				"🦭 SealVM",
 				"🦸 Wingriders",
 			),
-			fmt.Sprintf("%18s %9s",
+			fmt.Sprintf("%18s %9s %12s",
 				"🥩 Staking",
 				"🏊 SPOs",
+				"🏛️ Governance",
 			),
 		),
 	)
