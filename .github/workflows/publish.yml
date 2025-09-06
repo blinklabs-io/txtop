@@ -79,7 +79,7 @@ jobs:
             --data-binary @${_filename} \
             https://uploads.github.com/repos/${{ github.repository_owner }}/txtop/releases/${{ needs.create-draft-release.outputs.RELEASE_ID }}/assets?name=${_filename}
       - name: Attest binary
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-path: 'txtop'
 
@@ -134,13 +134,13 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Attest Docker Hub image
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-name: index.docker.io/blinklabs/txtop
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
       - name: Attest GHCR image
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-name: ghcr.io/${{ github.repository }}
           subject-digest: ${{ steps.push.outputs.digest }}
