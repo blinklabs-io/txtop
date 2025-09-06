@@ -349,14 +349,24 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			for _, certificate := range tx.Certificates() {
 				eject := false
 				switch certificate.(type) {
-				case *lcommon.StakeRegistrationCertificate, *lcommon.StakeDeregistrationCertificate, *lcommon.StakeDelegationCertificate:
+				case *lcommon.StakeRegistrationCertificate,
+					*lcommon.StakeDeregistrationCertificate,
+					*lcommon.StakeDelegationCertificate:
 					icon = "🥩"
 					eject = true
-				case *lcommon.PoolRegistrationCertificate, *lcommon.PoolRetirementCertificate:
+				case *lcommon.PoolRegistrationCertificate,
+					*lcommon.PoolRetirementCertificate:
 					icon = "🏊"
 					eject = true
-				case *lcommon.VoteDelegationCertificate, *lcommon.StakeVoteDelegationCertificate, *lcommon.VoteRegistrationDelegationCertificate, *lcommon.StakeVoteRegistrationDelegationCertificate,
-					*lcommon.AuthCommitteeHotCertificate, *lcommon.ResignCommitteeColdCertificate, *lcommon.RegistrationDrepCertificate, *lcommon.DeregistrationDrepCertificate, *lcommon.UpdateDrepCertificate:
+				case *lcommon.VoteDelegationCertificate,
+					*lcommon.StakeVoteDelegationCertificate,
+					*lcommon.VoteRegistrationDelegationCertificate,
+					*lcommon.StakeVoteRegistrationDelegationCertificate,
+					*lcommon.AuthCommitteeHotCertificate,
+					*lcommon.ResignCommitteeColdCertificate,
+					*lcommon.RegistrationDrepCertificate,
+					*lcommon.DeregistrationDrepCertificate,
+					*lcommon.UpdateDrepCertificate:
 					icon = "🏛️"
 					eject = true
 				}
