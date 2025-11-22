@@ -392,20 +392,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 	return sb.String()
 }
 
-func main() {
-	cfg, err := LoadConfig()
-	if err != nil {
-		fmt.Printf("failed to load config: %s", err)
-		os.Exit(1)
-	}
-	// text.SetBorder(true)
-	errorChan := make(chan error)
-	go func() {
-		for {
-			err := <-errorChan
-			text.SetText(fmt.Sprintf(" [red]ERROR: async: %s", err))
-		}
-	}()
+func initializeData(errorChan chan error) {
 	oConn, err := GetConnection(errorChan)
 	if err != nil {
 		text.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
@@ -415,6 +402,9 @@ func main() {
 			GetTransactions(oConn),
 		))
 	}
+}
+
+func setupUI() {
 	headerText.SetText(fmt.Sprintln(" > txtop -", GetVersionString()))
 	footerText.SetText(
 		fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"),
@@ -485,6 +475,9 @@ func main() {
 		return event
 	})
 	pages.AddPage("Main", flex, true, true)
+}
+
+func startRefreshLoop(cfg *Config, errorChan chan error) {
 	go func(cfg *Config) {
 		for {
 			if paused {
@@ -509,7 +502,25 @@ func main() {
 			}
 		}
 	}(cfg)
+}
 
+func main() {
+	cfg, err := LoadConfig()
+	if err != nil {
+		fmt.Printf("failed to load config: %s", err)
+		os.Exit(1)
+	}
+	// text.SetBorder(true)
+	errorChan := make(chan error)
+	go func() {
+		for {
+			err := <-errorChan
+			text.SetText(fmt.Sprintf(" [red]ERROR: async: %s", err))
+		}
+	}()
+	initializeData(errorChan)
+	setupUI()
+	startRefreshLoop(cfg, errorChan)
 	if err := app.SetRoot(pages, true).EnableMouse(false).Run(); err != nil {
 		panic(err)
 	}
