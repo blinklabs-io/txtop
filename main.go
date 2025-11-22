@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -60,11 +61,13 @@ var logBuffer = &LogBuffer{maxLines: 1000}
 
 var globalConfig = &Config{
 	App: AppConfig{
-		Network:       "",
-		Refresh:       3,
-		Retries:       3,
-		LogBufferSize: 1000,
-		MaxBackoff:    30,
+		Network:                  "",
+		Refresh:                  3,
+		Retries:                  3,
+		LogBufferSize:            1000,
+		MaxBackoff:               30,
+		MaxDisplayedTransactions: 100,
+		SortBy:                   "size",
 	},
 	Node: NodeConfig{
 		Network:    "mainnet",
@@ -96,8 +99,9 @@ var text = tview.NewTextView().
 	SetChangedFunc(func() { app.Draw() })
 
 var (
-	paused  bool = false
-	content string
+	paused        bool = false
+	content       string
+	currentSortBy string = "size"
 )
 
 // These are populated at build time
@@ -120,11 +124,13 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Network       string `envconfig:"NETWORK"`
-	Refresh       uint32 `envconfig:"REFRESH"`
-	Retries       uint32 `envconfig:"RETRIES"`
-	LogBufferSize uint32 `envconfig:"LOG_BUFFER_SIZE"`
-	MaxBackoff    uint32 `envconfig:"MAX_BACKOFF"`
+	Network                  string `envconfig:"NETWORK"`
+	Refresh                  uint32 `envconfig:"REFRESH"`
+	Retries                  uint32 `envconfig:"RETRIES"`
+	LogBufferSize            uint32 `envconfig:"LOG_BUFFER_SIZE"`
+	MaxBackoff               uint32 `envconfig:"MAX_BACKOFF"`
+	MaxDisplayedTransactions uint32 `envconfig:"MAX_DISPLAYED_TRANSACTIONS"`
+	SortBy                   string `envconfig:"SORT_BY"`
 }
 
 type NodeConfig struct {
@@ -199,10 +205,10 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 				"max_retries",
 				retries,
 			)
-			delay := time.Duration(1<<attempt) * time.Second
-			if delay > time.Duration(cfg.App.MaxBackoff)*time.Second {
-				delay = time.Duration(cfg.App.MaxBackoff) * time.Second
-			}
+			delay := min(
+				time.Duration(1<<attempt)*time.Second,
+				time.Duration(cfg.App.MaxBackoff)*time.Second,
+			)
 			time.Sleep(delay)
 		}
 		if cfg.Node.Address != "" && cfg.Node.Port > 0 {
@@ -263,16 +269,18 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 	if oConn == nil {
 		return ""
 	}
-	var sb strings.Builder
-	// sb.WriteString(" [white]Transactions:\n")
-	sb.WriteString(
-		fmt.Sprintf(" [white]%-10s %-10s %s\n", "Size:", "Icon:", "TxHash:"),
-	)
+	cfg := GetConfig()
+	maxTx := int(cfg.App.MaxDisplayedTransactions)
+	type txInfo struct {
+		size int
+		icon string
+		hash string
+	}
+	var txs []txInfo
 	for {
 		txRawBytes, err := oConn.LocalTxMonitor().Client.NextTx()
 		if err != nil {
-			sb.WriteString(fmt.Sprintf(" [red]ERROR: NextTx: %s\n", err))
-			return sb.String()
+			return fmt.Sprintf(" [red]ERROR: NextTx: %s", err)
 		}
 		if txRawBytes == nil {
 			break
@@ -280,13 +288,11 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 		size := len(txRawBytes)
 		txType, err := ledger.DetermineTransactionType(txRawBytes)
 		if err != nil {
-			sb.WriteString(fmt.Sprintf(" [red]ERROR: TxType: %s\n", err))
-			return sb.String()
+			return fmt.Sprintf(" [red]ERROR: TxType: %s", err)
 		}
 		tx, err := ledger.NewTransactionFromCbor(txType, txRawBytes)
 		if err != nil {
-			sb.WriteString(fmt.Sprintf(" [red]ERROR: Tx: %s\n", err))
-			return sb.String()
+			return fmt.Sprintf(" [red]ERROR: Tx: %s", err)
 		}
 		var icon string
 		// Check if Tx has metadata and compare against our list
@@ -423,17 +429,32 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			}
 		}
 
+		txs = append(txs, txInfo{size, icon, tx.Hash().String()})
+	}
+	// sort txs by size desc if configured
+	if currentSortBy == "size" {
+		sort.Slice(txs, func(i, j int) bool {
+			return txs[i].size > txs[j].size
+		})
+	}
+	// take top maxTx
+	if len(txs) > maxTx {
+		txs = txs[:maxTx]
+	}
+	// build sb
+	var sb strings.Builder
+	fmt.Fprintf(&sb, " [white]%-10s %-10s %s\n", "Size:", "Icon:", "TxHash:")
+	for _, t := range txs {
 		spaces := "10"
-		if icon != "" {
+		if t.icon != "" {
 			spaces = "9"
 		}
-		sb.WriteString(
-			fmt.Sprintf(
-				" [white]%-10d %-"+spaces+"s [blue]%s[white]\n",
-				size,
-				icon,
-				tx.Hash(),
-			),
+		fmt.Fprintf(
+			&sb,
+			" [white]%-10d %-"+spaces+"s [blue]%s[white]\n",
+			t.size,
+			t.icon,
+			t.hash,
 		)
 	}
 	return sb.String()
@@ -455,7 +476,7 @@ func initializeData(errorChan chan error) {
 func setupUI() {
 	headerText.SetText(fmt.Sprintln(" > txtop -", GetVersionString()))
 	footerText.SetText(
-		fmt.Sprintln(" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause"),
+		" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause | [yellow](s)[white] Sort: " + currentSortBy,
 	)
 	legendText.SetText(
 		fmt.Sprintf(" Legend: [white]%s\n %s\n %s",
@@ -505,17 +526,30 @@ func setupUI() {
 			footerText.Clear()
 			if paused {
 				footerText.SetText(
-					fmt.Sprintln(
-						" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused)",
-					),
+					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused) | [yellow](s)[white] Sort: " + currentSortBy,
 				)
 				return event
 			}
 			footerText.SetText(
-				fmt.Sprintln(
-					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause",
-				),
+				" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause | [yellow](s)[white] Sort: " + currentSortBy,
 			)
+		}
+		if event.Rune() == 115 { // s
+			if currentSortBy == "size" {
+				currentSortBy = "time"
+			} else {
+				currentSortBy = "size"
+			}
+			footerText.Clear()
+			if paused {
+				footerText.SetText(
+					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused) | [yellow](s)[white] Sort: " + currentSortBy,
+				)
+			} else {
+				footerText.SetText(
+					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause | [yellow](s)[white] Sort: " + currentSortBy,
+				)
+			}
 		}
 		if event.Rune() == 113 || event.Key() == tcell.KeyEscape { // q
 			app.Stop()
