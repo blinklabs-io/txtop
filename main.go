@@ -17,8 +17,10 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	models "github.com/blinklabs-io/cardano-models"
@@ -31,11 +33,38 @@ import (
 	"github.com/rivo/tview"
 )
 
+type LogBuffer struct {
+	mu       sync.RWMutex
+	lines    []string
+	maxLines int
+}
+
+func (lb *LogBuffer) Write(p []byte) (n int, err error) {
+	lb.mu.Lock()
+	lb.lines = append(lb.lines, string(p))
+	if len(lb.lines) > lb.maxLines {
+		lb.lines = lb.lines[len(lb.lines)-lb.maxLines:]
+	}
+	lb.mu.Unlock()
+	return len(p), nil
+}
+
+func (lb *LogBuffer) String() string {
+	lb.mu.RLock()
+	s := strings.Join(lb.lines, "")
+	lb.mu.RUnlock()
+	return s
+}
+
+var logBuffer = &LogBuffer{maxLines: 1000}
+
 var globalConfig = &Config{
 	App: AppConfig{
-		Network: "",
-		Refresh: 3,
-		Retries: 3,
+		Network:       "",
+		Refresh:       3,
+		Retries:       3,
+		LogBufferSize: 1000,
+		MaxBackoff:    30,
 	},
 	Node: NodeConfig{
 		Network:    "mainnet",
@@ -91,9 +120,11 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Network string `envconfig:"NETWORK"`
-	Refresh uint32 `envconfig:"REFRESH"`
-	Retries uint32 `envconfig:"RETRIES"`
+	Network       string `envconfig:"NETWORK"`
+	Refresh       uint32 `envconfig:"REFRESH"`
+	Retries       uint32 `envconfig:"RETRIES"`
+	LogBufferSize uint32 `envconfig:"LOG_BUFFER_SIZE"`
+	MaxBackoff    uint32 `envconfig:"MAX_BACKOFF"`
 }
 
 type NodeConfig struct {
@@ -157,43 +188,59 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failure creating ouroboros connection: %w", err)
 	}
-	if cfg.Node.Address != "" && cfg.Node.Port > 0 {
-		err := oConn.Dial(
-			"tcp",
-			fmt.Sprintf("%s:%d", cfg.Node.Address, cfg.Node.Port),
-		)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"failure connecting to node via TCP: %w",
-				err,
+	retries := int(cfg.App.Retries)
+	var lastErr error
+	for attempt := 0; attempt <= retries; attempt++ {
+		if attempt > 0 {
+			slog.Info(
+				"Retrying connection",
+				"attempt",
+				attempt,
+				"max_retries",
+				retries,
 			)
-		}
-	} else if cfg.Node.SocketPath != "" {
-		_, err := os.Stat(cfg.Node.SocketPath)
-		if err != nil {
-			if os.IsNotExist(err) {
-				return nil, fmt.Errorf(
-					"node socket path does not exist: %s",
-					cfg.Node.SocketPath,
-				)
-			} else {
-				return nil, fmt.Errorf(
-					"unknown error checking if node socket path exists: %w",
-					err,
-				)
+			delay := time.Duration(1<<attempt) * time.Second
+			if delay > time.Duration(cfg.App.MaxBackoff)*time.Second {
+				delay = time.Duration(cfg.App.MaxBackoff) * time.Second
 			}
+			time.Sleep(delay)
 		}
-		err = oConn.Dial("unix", cfg.Node.SocketPath)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"failure connecting to node via UNIX socket: %w",
-				err,
+		if cfg.Node.Address != "" && cfg.Node.Port > 0 {
+			err = oConn.Dial(
+				"tcp",
+				fmt.Sprintf("%s:%d", cfg.Node.Address, cfg.Node.Port),
 			)
+			if err != nil {
+				slog.Warn(
+					"Failed to connect via TCP",
+					"address",
+					fmt.Sprintf("%s:%d", cfg.Node.Address, cfg.Node.Port),
+					"error",
+					err,
+					"attempt",
+					attempt,
+				)
+				lastErr = err
+				continue
+			}
+		} else if cfg.Node.SocketPath != "" {
+			err = oConn.Dial("unix", cfg.Node.SocketPath)
+			if err != nil {
+				slog.Warn("Failed to connect via UNIX socket", "path", cfg.Node.SocketPath, "error", err, "attempt", attempt)
+				lastErr = err
+				continue
+			}
+		} else {
+			return nil, errors.New("specify either the UNIX socket path or the address/port")
 		}
-	} else {
-		return nil, errors.New("specify either the UNIX socket path or the address/port")
+		slog.Info("Successfully connected to node")
+		return oConn, nil
 	}
-	return oConn, nil
+	return nil, fmt.Errorf(
+		"failed to connect after %d attempts, last error: %w",
+		retries+1,
+		lastErr,
+	)
 }
 
 func GetSizes(oConn *ouroboros.Connection) string {
@@ -395,6 +442,7 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 func initializeData(errorChan chan error) {
 	oConn, err := GetConnection(errorChan)
 	if err != nil {
+		slog.Error("Failed to initialize connection", "error", err)
 		text.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
 	} else {
 		text.SetText(fmt.Sprintf("%s\n%s",
@@ -486,6 +534,7 @@ func startRefreshLoop(cfg *Config, errorChan chan error) {
 				time.Sleep(time.Second * time.Duration(cfg.App.Refresh))
 				oConn, err := GetConnection(errorChan)
 				if err != nil {
+					slog.Error("Failed to refresh connection", "error", err)
 					text.Clear()
 					text.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
 				} else {
@@ -507,20 +556,29 @@ func startRefreshLoop(cfg *Config, errorChan chan error) {
 func main() {
 	cfg, err := LoadConfig()
 	if err != nil {
+		fmt.Print(logBuffer.String())
 		fmt.Printf("failed to load config: %s", err)
 		os.Exit(1)
+	}
+	slog.SetDefault(
+		slog.New(slog.NewTextHandler(logBuffer, &slog.HandlerOptions{})),
+	)
+	if cfg.App.LogBufferSize > 0 {
+		logBuffer.maxLines = int(cfg.App.LogBufferSize)
 	}
 	// text.SetBorder(true)
 	errorChan := make(chan error)
 	go func() {
 		for {
 			err := <-errorChan
+			slog.Error("Async error", "error", err)
 			text.SetText(fmt.Sprintf(" [red]ERROR: async: %s", err))
 		}
 	}()
 	initializeData(errorChan)
 	setupUI()
 	startRefreshLoop(cfg, errorChan)
+	defer func() { fmt.Print(logBuffer.String()) }()
 	if err := app.SetRoot(pages, true).EnableMouse(false).Run(); err != nil {
 		panic(err)
 	}
