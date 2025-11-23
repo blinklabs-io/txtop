@@ -22,6 +22,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	models "github.com/blinklabs-io/cardano-models"
@@ -99,10 +100,26 @@ var text = tview.NewTextView().
 	SetChangedFunc(func() { app.Draw() })
 
 var (
-	paused        bool = false
+	paused        int32 = 0 // 0 = false, 1 = true (atomic)
 	content       string
+	sortMu        sync.RWMutex
 	currentSortBy string = "size"
 )
+
+// Atomic helpers for paused variable
+func isPaused() bool {
+	return atomic.LoadInt32(&paused) == 1
+}
+
+func togglePaused() bool {
+	for {
+		cur := atomic.LoadInt32(&paused)
+		next := cur ^ 1
+		if atomic.CompareAndSwapInt32(&paused, cur, next) {
+			return next == 1
+		}
+	}
+}
 
 // These are populated at build time
 var (
@@ -432,7 +449,10 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 		txs = append(txs, txInfo{size, icon, tx.Hash().String()})
 	}
 	// sort txs by size desc if configured
-	if currentSortBy == "size" {
+	sortMu.RLock()
+	sortBy := currentSortBy
+	sortMu.RUnlock()
+	if sortBy == "size" {
 		sort.Slice(txs, func(i, j int) bool {
 			return txs[i].size > txs[j].size
 		})
@@ -473,11 +493,24 @@ func initializeData(errorChan chan error) {
 	}
 }
 
+func updateFooterText(paused bool, sortBy string) string {
+	pausedText := ""
+	if paused {
+		pausedText = " [yellow](paused)"
+	}
+	return fmt.Sprintf(
+		" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause%s | [yellow](s)[white] Sort: %s",
+		pausedText,
+		sortBy,
+	)
+}
+
 func setupUI() {
 	headerText.SetText(fmt.Sprintln(" > txtop -", GetVersionString()))
-	footerText.SetText(
-		" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause | [yellow](s)[white] Sort: " + currentSortBy,
-	)
+	sortMu.RLock()
+	sortBy := currentSortBy
+	sortMu.RUnlock()
+	footerText.SetText(updateFooterText(false, sortBy))
 	legendText.SetText(
 		fmt.Sprintf(" Legend: [white]%s\n %s\n %s",
 			fmt.Sprintf("%12s %12s %12s %12s %12s %12s",
@@ -522,34 +555,27 @@ func setupUI() {
 			false)
 	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Rune() == 112 { // p
-			paused = !paused
+			newPaused := togglePaused()
 			footerText.Clear()
-			if paused {
-				footerText.SetText(
-					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused) | [yellow](s)[white] Sort: " + currentSortBy,
-				)
+			sortMu.RLock()
+			sortBy := currentSortBy
+			sortMu.RUnlock()
+			footerText.SetText(updateFooterText(newPaused, sortBy))
+			if newPaused {
 				return event
 			}
-			footerText.SetText(
-				" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause | [yellow](s)[white] Sort: " + currentSortBy,
-			)
 		}
 		if event.Rune() == 115 { // s
+			sortMu.Lock()
 			if currentSortBy == "size" {
 				currentSortBy = "time"
 			} else {
 				currentSortBy = "size"
 			}
+			sortBy := currentSortBy
+			sortMu.Unlock()
 			footerText.Clear()
-			if paused {
-				footerText.SetText(
-					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause [yellow](paused) | [yellow](s)[white] Sort: " + currentSortBy,
-				)
-			} else {
-				footerText.SetText(
-					" [yellow](esc/q)[white] Quit | [yellow](p)[white] Pause | [yellow](s)[white] Sort: " + currentSortBy,
-				)
-			}
+			footerText.SetText(updateFooterText(isPaused(), sortBy))
 		}
 		if event.Rune() == 113 || event.Key() == tcell.KeyEscape { // q
 			app.Stop()
@@ -562,10 +588,7 @@ func setupUI() {
 func startRefreshLoop(cfg *Config, errorChan chan error) {
 	go func(cfg *Config) {
 		for {
-			if paused {
-				// do nothing
-			} else {
-				time.Sleep(time.Second * time.Duration(cfg.App.Refresh))
+			if !isPaused() {
 				oConn, err := GetConnection(errorChan)
 				if err != nil {
 					slog.Error("Failed to refresh connection", "error", err)
@@ -583,6 +606,7 @@ func startRefreshLoop(cfg *Config, errorChan chan error) {
 					}
 				}
 			}
+			time.Sleep(time.Second * time.Duration(cfg.App.Refresh))
 		}
 	}(cfg)
 }
