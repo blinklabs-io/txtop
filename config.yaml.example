@@ -1,0 +1,20 @@
+# txtop Configuration File
+# This is a sample YAML configuration file for txtop.
+# Place this file at a path and set CONFIG_FILE environment variable to its path.
+# Environment variables will override these values.
+
+app:
+  network: ""  # Network name (e.g., "mainnet", "preprod")
+  refresh: 3   # Refresh interval in seconds
+  retries: 3   # Number of connection retries
+  log_buffer_size: 1000  # Max log lines to buffer
+  max_backoff: 30  # Max backoff delay in seconds
+  max_displayed_transactions: 100  # Max transactions to display
+  sort_by: "size"  # Sort mode: "size" or "time"
+
+node:
+  network: "mainnet"  # Cardano network
+  network_magic: 0    # Network magic (auto-set from network if 0)
+  socket_path: "/opt/cardano/ipc/socket"  # UNIX socket path
+  address: ""         # TCP host (leave empty for UNIX socket)
+  port: 30001         # TCP port

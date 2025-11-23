@@ -32,6 +32,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rivo/tview"
+	"gopkg.in/yaml.v3"
 )
 
 type LogBuffer struct {
@@ -119,32 +120,53 @@ func GetVersionString() string {
 }
 
 type Config struct {
-	App  AppConfig
-	Node NodeConfig
+	App  AppConfig  `yaml:"app"`
+	Node NodeConfig `yaml:"node"`
 }
 
 type AppConfig struct {
-	Network                  string `envconfig:"NETWORK"`
-	Refresh                  uint32 `envconfig:"REFRESH"`
-	Retries                  uint32 `envconfig:"RETRIES"`
-	LogBufferSize            uint32 `envconfig:"LOG_BUFFER_SIZE"`
-	MaxBackoff               uint32 `envconfig:"MAX_BACKOFF"`
-	MaxDisplayedTransactions uint32 `envconfig:"MAX_DISPLAYED_TRANSACTIONS"`
-	SortBy                   string `envconfig:"SORT_BY"`
+	Network                  string `envconfig:"NETWORK" yaml:"network"`
+	Refresh                  uint32 `envconfig:"REFRESH" yaml:"refresh"`
+	Retries                  uint32 `envconfig:"RETRIES" yaml:"retries"`
+	LogBufferSize            uint32 `envconfig:"LOG_BUFFER_SIZE" yaml:"log_buffer_size"`
+	MaxBackoff               uint32 `envconfig:"MAX_BACKOFF" yaml:"max_backoff"`
+	MaxDisplayedTransactions uint32 `envconfig:"MAX_DISPLAYED_TRANSACTIONS" yaml:"max_displayed_transactions"`
+	SortBy                   string `envconfig:"SORT_BY" yaml:"sort_by"`
 }
 
 type NodeConfig struct {
-	Network      string `envconfig:"CARDANO_NETWORK"`
-	NetworkMagic uint32 `envconfig:"CARDANO_NODE_NETWORK_MAGIC"`
-	SocketPath   string `envconfig:"CARDANO_NODE_SOCKET_PATH"`
-	Address      string `envconfig:"CARDANO_NODE_SOCKET_TCP_HOST"`
-	Port         uint32 `envconfig:"CARDANO_NODE_SOCKET_TCP_PORT"`
+	Network      string `envconfig:"CARDANO_NETWORK" yaml:"network"`
+	NetworkMagic uint32 `envconfig:"CARDANO_NODE_NETWORK_MAGIC" yaml:"network_magic"`
+	SocketPath   string `envconfig:"CARDANO_NODE_SOCKET_PATH" yaml:"socket_path"`
+	Address      string `envconfig:"CARDANO_NODE_SOCKET_TCP_HOST" yaml:"address"`
+	Port         uint32 `envconfig:"CARDANO_NODE_SOCKET_TCP_PORT" yaml:"port"`
+}
+
+func (c *Config) Load(configFile string) error {
+	// Load config file as YAML if provided
+	if configFile != "" {
+		buf, err := os.ReadFile(configFile)
+		if err != nil {
+			return fmt.Errorf("error reading config file: %w", err)
+		}
+		err = yaml.Unmarshal(buf, c)
+		if err != nil {
+			return fmt.Errorf("error parsing config file: %w", err)
+		}
+	}
+	// Load config values from environment variables
+	err := envconfig.Process("txtop", c)
+	if err != nil {
+		return fmt.Errorf("error processing environment: %w", err)
+	}
+	return nil
 }
 
 func LoadConfig() (*Config, error) {
-	err := envconfig.Process("txtop", globalConfig)
+	configFile := os.Getenv("CONFIG_FILE")
+	err := globalConfig.Load(configFile)
 	if err != nil {
-		return nil, fmt.Errorf("error processing environment: %w", err)
+		return nil, err
 	}
 	if err := globalConfig.populateNetworkMagic(); err != nil {
 		return nil, err
