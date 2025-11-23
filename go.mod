@@ -11,6 +11,7 @@ require (
 	github.com/gdamore/tcell/v2 v2.9.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.42.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
