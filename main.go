@@ -609,6 +609,7 @@ func setupUI() {
 
 func startRefreshLoop(cfg *Config, errorChan chan error) {
 	go func(cfg *Config) {
+		interval := time.Second * time.Duration(cfg.App.Refresh)
 		for {
 			if !isPaused() {
 				oConn, err := GetConnection(errorChan)
@@ -628,7 +629,7 @@ func startRefreshLoop(cfg *Config, errorChan chan error) {
 					}
 				}
 			}
-			time.Sleep(time.Second * time.Duration(cfg.App.Refresh))
+			time.Sleep(interval)
 		}
 	}(cfg)
 }
