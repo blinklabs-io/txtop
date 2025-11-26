@@ -5,8 +5,8 @@ go 1.24.0
 toolchain go1.24.4
 
 require (
-	github.com/blinklabs-io/cardano-models v0.6.0
-	github.com/blinklabs-io/gouroboros v0.138.0
+	github.com/blinklabs-io/cardano-models v0.7.0
+	github.com/blinklabs-io/gouroboros v0.139.0
 	github.com/fxamacker/cbor/v2 v2.9.0
 	github.com/gdamore/tcell/v2 v2.9.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -34,11 +34,11 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/utxorpc/go-codegen v0.17.0 // indirect
+	github.com/utxorpc/go-codegen v0.18.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	golang.org/x/crypto v0.45.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/term v0.37.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	google.golang.org/protobuf v1.36.10 // indirect
 )
