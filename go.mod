@@ -8,7 +8,7 @@ require (
 	github.com/blinklabs-io/cardano-models v0.7.0
 	github.com/blinklabs-io/gouroboros v0.140.0
 	github.com/fxamacker/cbor/v2 v2.9.0
-	github.com/gdamore/tcell/v2 v2.9.0
+	github.com/gdamore/tcell/v2 v2.13.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.42.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -31,8 +31,7 @@ require (
 	github.com/go-playground/validator/v10 v10.28.0 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
-	github.com/mattn/go-runewidth v0.0.16 // indirect
+	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/utxorpc/go-codegen v0.18.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
