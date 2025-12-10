@@ -70,10 +70,10 @@ func BenchmarkSortTransactions(b *testing.B) {
 
 func TestGetVersionString(t *testing.T) {
 	tests := []struct {
-		name         string
-		version      string
-		commitHash   string
-		expected     string
+		name       string
+		version    string
+		commitHash string
+		expected   string
 	}{
 		{
 			name:       "with version",
@@ -107,7 +107,11 @@ func TestGetVersionString(t *testing.T) {
 
 			result := GetVersionString()
 			if result != tt.expected {
-				t.Errorf("GetVersionString() = %v, want %v", result, tt.expected)
+				t.Errorf(
+					"GetVersionString() = %v, want %v",
+					result,
+					tt.expected,
+				)
 			}
 		})
 	}
@@ -138,7 +142,11 @@ func TestUpdateFooterText(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			result := updateFooterText(tt.paused, tt.sortBy)
 			if result != tt.expected {
-				t.Errorf("updateFooterText() = %q, want %q", result, tt.expected)
+				t.Errorf(
+					"updateFooterText() = %q, want %q",
+					result,
+					tt.expected,
+				)
 			}
 		})
 	}
@@ -221,7 +229,12 @@ func TestLogBuffer_Write(t *testing.T) {
 	expected := []string{"line2", "line3", "line4"}
 	for i, expectedLine := range expected {
 		if lb.lines[i] != expectedLine {
-			t.Errorf("LogBuffer line %d = %q, want %q", i, lb.lines[i], expectedLine)
+			t.Errorf(
+				"LogBuffer line %d = %q, want %q",
+				i,
+				lb.lines[i],
+				expectedLine,
+			)
 		}
 	}
 	lb.mu.RUnlock()

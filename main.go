@@ -142,19 +142,19 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Network                  string `envconfig:"NETWORK" yaml:"network"`
-	Refresh                  uint32 `envconfig:"REFRESH" yaml:"refresh"`
-	Retries                  uint32 `envconfig:"RETRIES" yaml:"retries"`
-	LogBufferSize            uint32 `envconfig:"LOG_BUFFER_SIZE" yaml:"log_buffer_size"`
-	MaxBackoff               uint32 `envconfig:"MAX_BACKOFF" yaml:"max_backoff"`
+	Network                  string `envconfig:"NETWORK"                    yaml:"network"`
+	Refresh                  uint32 `envconfig:"REFRESH"                    yaml:"refresh"`
+	Retries                  uint32 `envconfig:"RETRIES"                    yaml:"retries"`
+	LogBufferSize            uint32 `envconfig:"LOG_BUFFER_SIZE"            yaml:"log_buffer_size"`
+	MaxBackoff               uint32 `envconfig:"MAX_BACKOFF"                yaml:"max_backoff"`
 	MaxDisplayedTransactions uint32 `envconfig:"MAX_DISPLAYED_TRANSACTIONS" yaml:"max_displayed_transactions"`
-	SortBy                   string `envconfig:"SORT_BY" yaml:"sort_by"`
+	SortBy                   string `envconfig:"SORT_BY"                    yaml:"sort_by"`
 }
 
 type NodeConfig struct {
-	Network      string `envconfig:"CARDANO_NETWORK" yaml:"network"`
-	NetworkMagic uint32 `envconfig:"CARDANO_NODE_NETWORK_MAGIC" yaml:"network_magic"`
-	SocketPath   string `envconfig:"CARDANO_NODE_SOCKET_PATH" yaml:"socket_path"`
+	Network      string `envconfig:"CARDANO_NETWORK"              yaml:"network"`
+	NetworkMagic uint32 `envconfig:"CARDANO_NODE_NETWORK_MAGIC"   yaml:"network_magic"`
+	SocketPath   string `envconfig:"CARDANO_NODE_SOCKET_PATH"     yaml:"socket_path"`
 	Address      string `envconfig:"CARDANO_NODE_SOCKET_TCP_HOST" yaml:"address"`
 	Port         uint32 `envconfig:"CARDANO_NODE_SOCKET_TCP_PORT" yaml:"port"`
 }
@@ -616,7 +616,9 @@ func startRefreshLoop(cfg *Config, errorChan chan error) {
 				if err != nil {
 					slog.Error("Failed to refresh connection", "error", err)
 					text.Clear()
-					text.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
+					text.SetText(
+						fmt.Sprintf(" [red]failed to connect to node: %s", err),
+					)
 				} else {
 					tmpText := fmt.Sprintf("%s\n%s",
 						GetSizes(oConn),
