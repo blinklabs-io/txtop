@@ -8,7 +8,7 @@ require (
 	github.com/blinklabs-io/cardano-models v0.7.0
 	github.com/blinklabs-io/gouroboros v0.147.0
 	github.com/fxamacker/cbor/v2 v2.9.0
-	github.com/gdamore/tcell/v2 v2.13.5
+	github.com/gdamore/tcell/v2 v2.13.7
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.42.0
 	gopkg.in/yaml.v3 v3.0.1
