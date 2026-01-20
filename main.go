@@ -421,7 +421,16 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1z976yepnveus5uddth7qd66kn6cuzd7tccjd39dfdayc7lnend0q3h5twed567pu236a0sf6vfgruxgpr4rkxryyx0zqa550y7":
 				icon = "🔵"
 			// Wingriders
-			case "addr1wxr2a8htmzuhj39y2gq7ftkpxv98y2g67tg8zezthgq4jkg0a4ul4":
+			case "addr1wxr2a8htmzuhj39y2gq7ftkpxv98y2g67tg8zezthgq4jkg0a4ul4",
+				"addr1wx0aglsd278m2wdea3lqzmw9acjcgsgs49n3942e3xc82xcu406l6",
+				"addr1wypr0np3xatwhddulsnj3aaac65qg768zgs2xpd2xuaj0zscmvh0n",
+				"addr1w8nvjzjeydcn4atcd93aac8allvrpjn7pjr2qsweukpnayghhwcpj",
+				"addr1wy9z0v8mrkhtyll43fu6mnhu0p87tna48xt4p56496x9f7g940jft",
+				"addr1w8z7qwzszt2lqy93m3atg2axx22yq5k7yvs9rmrvuwlawts2wzadz",
+				"addr1wxvx34v0hlxzk9x0clv7as9hvhn7dlzwj5xfcf6g4n5uucg4tkd7w",
+				"addr1w94x54jsrlexga6cajw37lf7ltssssvg6ah7jpslnkd58eq6vc878",
+				"addr1wxftfzwxavgcdj8at4adrmashphwccdldcxj0vg35gf2qhgmavq67",
+				"addr1w8r3ulqlcjp739a3kzlapt7xxgzv5x5gwq04tsm36ytc2rs0vx42u":
 				icon = "🦸"
 			}
 		}
