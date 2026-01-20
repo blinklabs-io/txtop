@@ -394,7 +394,19 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1w8arvq7j9qlrmt0wpdvpp7h4jr4fmfk8l653p9t907v2nsss7w7r4":
 				icon = "💧"
 			// Minswap
-			case "addr1z84q0denmyep98ph3tmzwsmw0j7zau9ljmsqx6a4rvaau66j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq777e2a":
+			case "addr1wxt2d5z2cxpaxj0jwlcqmyav08lpwrwwxacna2dyj0melqgugxgdz",
+				"addr1w9qlcn8s6lngj9p533vqx2dvm2nrtyv3j7p2hqy65zvyn0ck0gj25",
+				"addr1wyx22z2s4kasd3w976pnjf9xdty88epjqfvgkmfnscpd0rg3z8y6v",
+				"addr1wxn9efv2f6w82hagxqtn62ju4m293tqvw0uhmdl64ch8uwc0h43gt",
+				"addr1zxn9efv2f6w82hagxqtn62ju4m293tqvw0uhmdl64ch8uw6j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq6s3z70",
+				"addr1z8snz7c4974vzdpxu65ruphl3zjdvtxw8strf2c2tmqnxzf7l6s8x2a8s6ql8yxyxe7ydjjlu8xux7j9ymuj2njwqs6qa9r65k",
+				"addr1w9eu87z6ywets8talp9fv94kv6c7rjx9lnllv7pan39p53gkjg05e",
+				"addr1wxvd7wcq59gqljmhm2s9yp2slvygljfr8xtc3wykx7uaukgt8lqh6",
+				"addr1wxdct40gvyv525zlq79wahkuhmgadjs3q5lkrclemxvlu3qyda7l2",
+				"addr1wxwl25gyxf4ryexcq02yakr389vp68y39cnt4rnnhsu9utcjfhaef",
+				"addr1wx5p836jswavyfd3nuwscz53fkyu43kmn2wwje73qhf48mqw02kqx",
+				"addr1wxc45xspppp73takl93mq029905ptdfnmtgv6g7cr8pdyqgvks3s8",
+				"addr1wy3fscaws62d59k6qqhg3xsarx7vstzczgjmdhx2jh7knksj7w3y7":
 				icon = "🐱"
 			// Optim
 			case "addr1zywj8y96k38kye7qz329dhp0t782ykr0ev92mtz4yhv6gph8ucsr8rpyzewcf9jyf7gmjj052dednasdeznehw7aqc7q0z7vn2":
