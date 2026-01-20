@@ -580,7 +580,7 @@ func setupUI() {
 	sortMu.RUnlock()
 	footerText.SetText(updateFooterText(false, sortBy))
 	legendText.SetText(
-		fmt.Sprintf(" Legend: [white]%s\n %s\n %s",
+		fmt.Sprintf(" Legend: [white]%s\n         %s\n         %s",
 			fmt.Sprintf("%12s %12s %12s %12s %12s %12s",
 				"🏹 Dexhunter",
 				"🚰 DripDropz",
@@ -589,15 +589,14 @@ func setupUI() {
 				"💧 Liqwid",
 				"🐱 Minswap",
 			),
-			// Text formatting the wrong way for the win
-			fmt.Sprintf("%17s %15s %12s %10s %12s",
+			fmt.Sprintf("%12s %12s %12s %12s %12s",
 				"🅾️ Optim",
 				"💦 Splash",
 				"🍨 Sundae",
 				"🦭 SealVM",
 				"🦸 Wingriders",
 			),
-			fmt.Sprintf("%12s %9s %12s %12s %12s",
+			fmt.Sprintf("%12s %12s %12s %12s %12s",
 				"⚡ Strike",
 				"🥩 Staking",
 				"🏊 SPOs",
