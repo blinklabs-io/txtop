@@ -403,12 +403,17 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			case "addr1w9d85mfr73mk8pr5erd46d7e7whcah2tzcyqd5rr4hv2amg9sxgl8",
 				"addr1xxj62lufz8se8rlr7r79ap7rwa845f4gnvm6qls85kuxpw9954lcjy0pjw878u8ut6ruxa60tgn23xeh5plq0fdcvzuq7kuswe":
 				icon = "🕺"
-			// Spectrum
-			case "addr1wyr4uz0tp75fu8wrg6gm83t20aphuc9vt6n8kvu09ctkugqpsrmeh",
-				"addr1x94ec3t25egvhqy2n265xfhq882jxhkknurfe9ny4rl9k6dj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrst84slu",
-				"addr1x8nz307k3sr60gu0e47cmajssy4fmld7u493a4xztjrll0aj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrswgxsta",
-				"addr1wynp362vmvr8jtc946d3a3utqgclfdl5y9d3kn849e359hsskr20n":
-				icon = "🌈"
+			// Splash
+			case "addr1w8d70g7c58vznyye9guwagdza74x36f3uff0eyk2zwpcpxcn3whlz",
+				"addr1wysz2335xlh96e8gnq22vm88lxxtrp9xdt595taml46szps9nreda",
+				"addr1w9ryamhgnuz6lau86sqytte2gz5rlktv2yce05e0h3207qssa8euj",
+				"addr1wxvmst9ejnwz4azvzt94mt666f6zz93zsqzx0t6mmrpjx5scaz63e",
+				"addr1wxu29wa80fd4ptpfwqe20vpxrum45f57ud3r6egh9vuyhfc2a3jhj",
+				"addr1w95q755yrsr0xt8vmn007tpqee4hps49yjdef5dzknhl99qntsmh0",
+				"addr1wxrl2p9s0tweu8t54cgz75at070ly3tda6yh5s7cufanfzc52gv39",
+				"addr1wymhr2l96gm22xkwz0rn3zz79xz9l400nm5sa580kssdyagr5z7wq",
+				"addr1w9884ny4sd83hpk9f6deuw8nc8mjlpy22t4ejnd9p40cyhc74rg6y":
+				icon = "💦"
 			// Sundae
 			case "addr1wxaptpmxcxawvr3pzlhgnpmzz3ql43n2tc8mn3av5kx0yzs09tqh8",
 				"addr1w9qzpelu9hn45pefc0xr4ac4kdxeswq7pndul2vuj59u8tqaxdznu",
@@ -565,7 +570,7 @@ func setupUI() {
 			// Text formatting the wrong way for the win
 			fmt.Sprintf("%17s %15s %12s %10s %12s",
 				"🅾️ Optim",
-				"🌈 Spectrum",
+				"💦 Splash",
 				"🍨 Sundae",
 				"🦭 SealVM",
 				"🦸 Wingriders",
