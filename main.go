@@ -391,7 +391,11 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			// Liqwid
 			case "addr1wx6htk5hfmr4dw32lhxdcp7t6xpe4jhs5fxylq90mqwnldsvr87c6",
 				"addr1wyn2aflq8ff7xaxpmqk9vz53ks28hz256tkyaj739rsvrrq3u5ft3",
-				"addr1w8arvq7j9qlrmt0wpdvpp7h4jr4fmfk8l653p9t907v2nsss7w7r4":
+				"addr1w8arvq7j9qlrmt0wpdvpp7h4jr4fmfk8l653p9t907v2nsss7w7r4",
+				"addr1w8gx94twjy68u37eart4saezuw2tmm23rf5ne59sn59gu9stp0dcy",
+				"addr1wxmpvupcrarexj5lp2k9dwsxwueue2l8rzcamrtdpdrfqvs6jk8k9",
+				"addr1wxxjtzuaprw2kulnzedpzagage95vptzvsy3c9ufmfvgwfsj8cv4s",
+				"addr1w9afj34vc68qdm7heuz7esmr8sj76wpa45t7dh3ag8xpplgml3zuk":
 				icon = "💧"
 			// Minswap
 			case "addr1z84q0denmyep98ph3tmzwsmw0j7zau9ljmsqx6a4rvaau66j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq777e2a":
