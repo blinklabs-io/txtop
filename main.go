@@ -463,6 +463,12 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1wy0qcxjytcv9fpf80szy6a7jkx40sz4y3x3g5nq7z8kgmuqth60kl",
 				"addr1z9yh4zcqs4gh78ysvh8nqp40fsnxg49nn3h6x25az9k8tms6409492020k6xml8uvwn34wrexagjh5fsk5xk96jyxk2qf3a7kj":
 				icon = "⚡"
+			// AdaHandle
+			case "addr1w9kqg07fu06dlw47q8s8548ulz4ra23caqnh0vg0j3sct8qrsqrpc",
+				"addr1w8vyuk74899edjmpzpzrjue0muclufezwh62xg6uzpduxvsszgvr0",
+				"addr1w9wdrrvetdua8k4365vslpxh8uukvcgyyqj54sphnwaluxs753n9e",
+				"addr1w9grm99rr5lxcdvjxguk9gnryulz2478f8e4udh95ttfqygu5z8er":
+				icon = "💲"
 			}
 		}
 		// Check if output includes known stake addresses
@@ -591,11 +597,12 @@ func setupUI() {
 				"🦭 SealVM",
 				"🦸 Wingriders",
 			),
-			fmt.Sprintf("%12s %9s %12s %12s",
+			fmt.Sprintf("%12s %9s %12s %12s %12s",
 				"⚡ Strike",
 				"🥩 Staking",
 				"🏊 SPOs",
 				"🏛️ Governance",
+				"💲 AdaHandle",
 			),
 		),
 	)
