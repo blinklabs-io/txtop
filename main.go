@@ -375,6 +375,10 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 			// Dripdropz
 			case "addr1v8pr9mwnqarw808gtllvmlxvk70hnszrukjeqfstr9t9g5crud8c4":
 				icon = "🚰"
+			// DexHunter
+			case "addr1w9hvftxrlw74wzk6vf0jfyp8wl8vt4arf8aq70rm4paselc46ptfq",
+				"addr1wxtlzuefvjg9k0r36ysk895gzjk97wl8027ffqc2snfje7gkzkf3h":
+				icon = "🏹"
 			// Indigo
 			case "addr1w80ptp0qgmcklhmeweesqgeurtlma8fsxsr9dt8au30fzss0czhl9",
 				"addr1w92w34pys9h4h02zxdfsp8lhcvdd5t9aaln9z96szsgh73scty4aj",
