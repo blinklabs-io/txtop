@@ -428,6 +428,12 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1wxftfzwxavgcdj8at4adrmashphwccdldcxj0vg35gf2qhgmavq67",
 				"addr1w8r3ulqlcjp739a3kzlapt7xxgzv5x5gwq04tsm36ytc2rs0vx42u":
 				icon = "🦸"
+			// Strike Finance
+			case "addr1zym7cc6d37vgh2g40ucmclczff4zmzudfql6pqk7vt2rh5g6409492020k6xml8uvwn34wrexagjh5fsk5xk96jyxk2qy3jvzp",
+				"addr1wy2gch9ua0700a3dg423wxcwx4p886m4ny5u3aqs66sluqcly9uud",
+				"addr1wy0qcxjytcv9fpf80szy6a7jkx40sz4y3x3g5nq7z8kgmuqth60kl",
+				"addr1z9yh4zcqs4gh78ysvh8nqp40fsnxg49nn3h6x25az9k8tms6409492020k6xml8uvwn34wrexagjh5fsk5xk96jyxk2qf3a7kj":
+				icon = "⚡"
 			}
 		}
 		// Check if output includes known stake addresses
@@ -549,14 +555,15 @@ func setupUI() {
 				"🐱 Minswap",
 			),
 			// Text formatting the wrong way for the win
-			fmt.Sprintf("%17s %15s %12s %10s %18s",
+			fmt.Sprintf("%17s %15s %12s %10s %12s",
 				"🅾️ Optim",
 				"🌈 Spectrum",
 				"🍨 Sundae",
 				"🦭 SealVM",
 				"🦸 Wingriders",
 			),
-			fmt.Sprintf("%18s %9s %12s",
+			fmt.Sprintf("%12s %9s %12s %12s",
+				"⚡ Strike",
 				"🥩 Staking",
 				"🏊 SPOs",
 				"🏛️ Governance",
