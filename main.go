@@ -414,7 +414,11 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 				"addr1w9qzpelu9hn45pefc0xr4ac4kdxeswq7pndul2vuj59u8tqaxdznu",
 				"addr1w9jx45flh83z6wuqypyash54mszwmdj8r64fydafxtfc6jgrw4rm3",
 				"addr1x8srqftqemf0mjlukfszd97ljuxdp44r372txfcr75wrz26rnxqnmtv3hdu2t6chcfhl2zzjh36a87nmd6dwsu3jenqsslnz7e",
-				"addr1z8ax5k9mutg07p2ngscu3chsauktmstq92z9de938j8nqal9r9z8yaghysf05atjyv79t73lercjdqnejetxm307m49qdfqcxd":
+				"addr1z8ax5k9mutg07p2ngscu3chsauktmstq92z9de938j8nqal9r9z8yaghysf05atjyv79t73lercjdqnejetxm307m49qdfqcxd",
+				"addr1w96dh8r6yds9et9wfmnrtg267mnrck3ej9wysyj5a6uhtzchkcr5d",
+				"addr1w82z6yrftsxz77el0ce2q4vuspcym2x0xgpgneurrwvasfge778fd",
+				"addr1z9ejwku7yelajfalc9x0v57eqng48zkcs6fxp2mr30mn7hxhy3954pmhklwxjz05vsx0qt4yw4a9275eldyrkp0c0hlq4gdz8r",
+				"addr1w8ax5k9mutg07p2ngscu3chsauktmstq92z9de938j8nqacprc9mw":
 				icon = "🍨"
 			// VyFinance
 			case "addr1w8ll74xa05dkn69n3rmp93h8maphmms2408nt0nyruarzvqr9zf64",
