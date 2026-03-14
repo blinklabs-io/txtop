@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"sync"
@@ -162,7 +163,7 @@ type NodeConfig struct {
 func (c *Config) Load(configFile string) error {
 	// Load config file as YAML if provided
 	if configFile != "" {
-		buf, err := os.ReadFile(configFile)
+		buf, err := os.ReadFile(filepath.Clean(configFile))
 		if err != nil {
 			return fmt.Errorf("error reading config file: %w", err)
 		}
