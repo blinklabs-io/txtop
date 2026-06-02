@@ -205,7 +205,7 @@ func TestTogglePaused(t *testing.T) {
 }
 
 func TestErrorChanIsolation(t *testing.T) {
-	// Regression test for issue #287: panic: send on closed channel.
+	// Regression test for issue panic: send on closed channel.
 	//
 	// gouroboros closes whichever error channel it is given during connection
 	// shutdown. Passing the same shared errorChan to every connection means
