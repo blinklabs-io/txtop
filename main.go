@@ -225,9 +225,14 @@ func (c *Config) populateNetworkMagic() error {
 
 func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 	cfg := GetConfig()
+	// gouroboros closes the error channel it's given during shutdown, so we
+	// must never hand it the shared errorChan directly — doing so would close
+	// it and cause a "send on closed channel" panic on the next connection.
+	// Instead give each connection its own channel and relay errors out.
+	connErrorChan := make(chan error, 10)
 	oConn, err := ouroboros.NewConnection(
 		ouroboros.WithNetworkMagic(uint32(cfg.Node.NetworkMagic)),
-		ouroboros.WithErrorChan(errorChan),
+		ouroboros.WithErrorChan(connErrorChan),
 		ouroboros.WithNodeToNode(false),
 		ouroboros.WithKeepAlive(true),
 	)
@@ -280,6 +285,11 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 			return nil, errors.New("specify either the UNIX socket path or the address/port")
 		}
 		slog.Info("Successfully connected to node")
+		go func() {
+			for err := range connErrorChan {
+				errorChan <- err
+			}
+		}()
 		return oConn, nil
 	}
 	return nil, fmt.Errorf(
@@ -559,6 +569,7 @@ func initializeData(errorChan chan error) {
 			GetSizes(oConn),
 			GetTransactions(oConn),
 		))
+		oConn.Close()
 	}
 }
 
@@ -673,6 +684,7 @@ func startRefreshLoop(cfg *Config, errorChan chan error) {
 						GetSizes(oConn),
 						GetTransactions(oConn),
 					)
+					oConn.Close()
 					if tmpText != "" && tmpText != content {
 						content = tmpText
 						text.Clear()
