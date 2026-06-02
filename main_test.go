@@ -224,10 +224,7 @@ func TestErrorChanIsolation(t *testing.T) {
 		go func() {
 			defer close(done)
 			for err := range connErrChan {
-				select {
-				case sharedErrChan <- err:
-				default:
-				}
+				sharedErrChan <- err
 			}
 		}()
 		connErrChan <- fmt.Errorf("error from connection %d", id)

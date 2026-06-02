@@ -287,10 +287,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 		slog.Info("Successfully connected to node")
 		go func() {
 			for err := range connErrorChan {
-				select {
-				case errorChan <- err:
-				default:
-				}
+				errorChan <- err
 			}
 		}()
 		return oConn, nil
