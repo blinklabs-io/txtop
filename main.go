@@ -230,14 +230,6 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 	// it and cause a "send on closed channel" panic on the next connection.
 	// Instead give each connection its own channel and relay errors out.
 	connErrorChan := make(chan error, 10)
-	go func() {
-		for err := range connErrorChan {
-			select {
-			case errorChan <- err:
-			default:
-			}
-		}
-	}()
 	oConn, err := ouroboros.NewConnection(
 		ouroboros.WithNetworkMagic(uint32(cfg.Node.NetworkMagic)),
 		ouroboros.WithErrorChan(connErrorChan),
@@ -293,6 +285,14 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 			return nil, errors.New("specify either the UNIX socket path or the address/port")
 		}
 		slog.Info("Successfully connected to node")
+		go func() {
+			for err := range connErrorChan {
+				select {
+				case errorChan <- err:
+				default:
+				}
+			}
+		}()
 		return oConn, nil
 	}
 	return nil, fmt.Errorf(
