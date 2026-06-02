@@ -18,8 +18,11 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+	"strings"
 	"sync/atomic"
 	"testing"
+
+	"github.com/rivo/uniseg"
 )
 
 type txInfo struct {
@@ -149,6 +152,49 @@ func TestUpdateFooterText(t *testing.T) {
 				)
 			}
 		})
+	}
+}
+
+func displayIndex(row, needle string) int {
+	index := strings.Index(row, needle)
+	if index == -1 {
+		return -1
+	}
+	return uniseg.StringWidth(row[:index])
+}
+
+// TestBuildLegendTextAlignsGrid verifies that labels in the same legend column
+// start at the same visible terminal position across all rows.
+func TestBuildLegendTextAlignsGrid(t *testing.T) {
+	legend := strings.ReplaceAll(buildLegendText(), "[white]", "")
+	rows := strings.Split(legend, "\n")
+	if len(rows) != 3 {
+		t.Fatalf("buildLegendText() returned %d rows, want 3", len(rows))
+	}
+
+	labelRows := [][]string{
+		{"Dexhunter", "DripDropz", "Indigo", "JPGstore", "Liqwid", "Minswap"},
+		{"Optim", "Splash", "Sundae", "SealVM", "Wingriders"},
+		{"Strike", "Staking", "SPOs", "Governance", "AdaHandle"},
+	}
+
+	expectedLabelPositions := make([]int, len(labelRows[0]))
+	for i, label := range labelRows[0] {
+		expectedLabelPositions[i] = displayIndex(rows[0], label)
+	}
+
+	for rowIndex, labels := range labelRows[1:] {
+		for columnIndex, label := range labels {
+			got := displayIndex(rows[rowIndex+1], label)
+			if got != expectedLabelPositions[columnIndex] {
+				t.Errorf(
+					"label %q starts at display column %d, want %d",
+					label,
+					got,
+					expectedLabelPositions[columnIndex],
+				)
+			}
+		}
 	}
 }
 
