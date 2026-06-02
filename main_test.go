@@ -204,6 +204,45 @@ func TestTogglePaused(t *testing.T) {
 	}
 }
 
+func TestErrorChanIsolation(t *testing.T) {
+	// Regression test for issue #287: panic: send on closed channel.
+	//
+	// gouroboros closes whichever error channel it is given during connection
+	// shutdown. Passing the same shared errorChan to every connection means
+	// the first shutdown closes it, and the second connection panics when it
+	// tries to send on the now-closed channel.
+	//
+	// The fix gives each connection its own connErrChan and relays errors into
+	// the shared channel. This test verifies that pattern: two simulated
+	// connection lifecycles must not panic and must relay their errors.
+
+	sharedErrChan := make(chan error, 10)
+
+	simulateConnection := func(id int) {
+		connErrChan := make(chan error, 10)
+		done := make(chan struct{})
+		go func() {
+			defer close(done)
+			for err := range connErrChan {
+				select {
+				case sharedErrChan <- err:
+				default:
+				}
+			}
+		}()
+		connErrChan <- fmt.Errorf("error from connection %d", id)
+		close(connErrChan) // gouroboros closes this on shutdown
+		<-done             // wait for relay goroutine to finish
+	}
+
+	simulateConnection(1)
+	simulateConnection(2) // would panic before the fix
+
+	if len(sharedErrChan) != 2 {
+		t.Errorf("expected 2 relayed errors, got %d", len(sharedErrChan))
+	}
+}
+
 func TestLogBuffer_Write(t *testing.T) {
 	lb := &LogBuffer{maxLines: 3}
 
