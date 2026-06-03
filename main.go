@@ -34,6 +34,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rivo/tview"
+	"github.com/rivo/uniseg"
 	"gopkg.in/yaml.v3"
 )
 
@@ -107,6 +108,11 @@ var (
 	sortMu        sync.RWMutex
 	currentSortBy string = "size"
 )
+
+type legendItem struct {
+	icon  string
+	label string
+}
 
 // Atomic helpers for paused variable
 func isPaused() bool {
@@ -585,39 +591,86 @@ func updateFooterText(paused bool, sortBy string) string {
 	)
 }
 
+func padDisplayWidth(s string, width int) string {
+	displayWidth := uniseg.StringWidth(s)
+	if displayWidth >= width {
+		return s
+	}
+	return s + strings.Repeat(" ", width-displayWidth)
+}
+
+func buildLegendText() string {
+	const (
+		iconWidth  = 2
+		labelWidth = 10
+		columnGap  = "  "
+		prefix     = " Legend: "
+	)
+	itemRows := [][]legendItem{
+		{
+			{icon: "🏹", label: "Dexhunter"},
+			{icon: "🚰", label: "DripDropz"},
+			{icon: "👁️", label: "Indigo"},
+			{icon: "🦛", label: "JPGstore"},
+			{icon: "💧", label: "Liqwid"},
+			{icon: "🐱", label: "Minswap"},
+		},
+		{
+			{icon: "🅾️", label: "Optim"},
+			{icon: "💦", label: "Splash"},
+			{icon: "🍨", label: "Sundae"},
+			{icon: "🦭", label: "SealVM"},
+			{icon: "🦸", label: "Wingriders"},
+		},
+		{
+			{icon: "⚡", label: "Strike"},
+			{icon: "🥩", label: "Staking"},
+			{icon: "🏊", label: "SPOs"},
+			{icon: "🏛️", label: "Governance"},
+			{icon: "💲", label: "AdaHandle"},
+		},
+	}
+
+	columns := 0
+	for _, itemRow := range itemRows {
+		if len(itemRow) > columns {
+			columns = len(itemRow)
+		}
+	}
+
+	rows := make([]string, 0, len(itemRows))
+	for _, itemRow := range itemRows {
+		rowItems := make([]string, 0, columns)
+		for _, item := range itemRow {
+			rowItems = append(
+				rowItems,
+				fmt.Sprintf(
+					"%s %s",
+					padDisplayWidth(item.icon, iconWidth),
+					padDisplayWidth(item.label, labelWidth),
+				),
+			)
+		}
+		rows = append(rows, strings.Join(rowItems, columnGap))
+	}
+
+	for i := range rows {
+		if i == 0 {
+			rows[i] = prefix + "[white]" + rows[i]
+			continue
+		}
+		rows[i] = strings.Repeat(" ", len(prefix)) + rows[i]
+	}
+	return strings.Join(rows, "\n")
+}
+
 func setupUI() {
 	headerText.SetText(fmt.Sprintln(" > txtop -", GetVersionString()))
 	sortMu.RLock()
 	sortBy := currentSortBy
 	sortMu.RUnlock()
 	footerText.SetText(updateFooterText(false, sortBy))
-	legendText.SetText(
-		fmt.Sprintf(" Legend: [white]%s\n %s\n %s",
-			fmt.Sprintf("%12s %12s %12s %12s %12s %12s",
-				"🏹 Dexhunter",
-				"🚰 DripDropz",
-				"👁️ Indigo",
-				"🦛 JPGstore",
-				"💧 Liqwid",
-				"🐱 Minswap",
-			),
-			// Text formatting the wrong way for the win
-			fmt.Sprintf("%17s %15s %12s %10s %12s",
-				"🅾️ Optim",
-				"💦 Splash",
-				"🍨 Sundae",
-				"🦭 SealVM",
-				"🦸 Wingriders",
-			),
-			fmt.Sprintf("%12s %9s %12s %12s %12s",
-				"⚡ Strike",
-				"🥩 Staking",
-				"🏊 SPOs",
-				"🏛️ Governance",
-				"💲 AdaHandle",
-			),
-		),
-	)
+	legendText.SetText(buildLegendText())
 	flex.SetDirection(tview.FlexRow).
 		AddItem(headerText,
 			1,
