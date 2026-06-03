@@ -16,12 +16,14 @@ package main
 
 import (
 	"fmt"
+	"math/big"
 	"math/rand"
 	"sort"
 	"strings"
 	"sync/atomic"
 	"testing"
 
+	lcommon "github.com/blinklabs-io/gouroboros/ledger/common"
 	"github.com/rivo/uniseg"
 )
 
@@ -175,7 +177,7 @@ func TestBuildLegendTextAlignsGrid(t *testing.T) {
 	labelRows := [][]string{
 		{"Dexhunter", "DripDropz", "Indigo", "JPGstore", "Liqwid", "Minswap"},
 		{"Optim", "Splash", "Sundae", "SealVM", "Wingriders"},
-		{"Strike", "Staking", "SPOs", "Governance", "AdaHandle"},
+		{"Strike", "Staking", "SPOs", "Governance", "AdaHandle", "Materios"},
 	}
 
 	expectedLabelPositions := make([]int, len(labelRows[0]))
@@ -195,6 +197,74 @@ func TestBuildLegendTextAlignsGrid(t *testing.T) {
 				)
 			}
 		}
+	}
+}
+
+// TestIsMateriosMetadata verifies detection of Materios Cardano metadata
+// without requiring a live node or mempool transaction.
+func TestIsMateriosMetadata(t *testing.T) {
+	materiosMetadata := lcommon.MetaMap{Pairs: []lcommon.MetaPair{
+		{
+			Key: lcommon.MetaInt{Value: big.NewInt(8746)},
+			Value: lcommon.MetaList{Items: []lcommon.TransactionMetadatum{
+				lcommon.MetaMap{Pairs: []lcommon.MetaPair{
+					{
+						Key:   lcommon.MetaText{Value: "k"},
+						Value: lcommon.MetaText{Value: "p"},
+					},
+					{
+						Key:   lcommon.MetaText{Value: "v"},
+						Value: lcommon.MetaText{Value: "materios"},
+					},
+				}},
+			}},
+		},
+	}}
+
+	tests := []struct {
+		name     string
+		metadata lcommon.TransactionMetadatum
+		expected bool
+	}{
+		{
+			name:     "materios label and marker",
+			metadata: materiosMetadata,
+			expected: true,
+		},
+		{
+			name: "same marker under different label",
+			metadata: lcommon.MetaMap{Pairs: []lcommon.MetaPair{
+				{
+					Key:   lcommon.MetaInt{Value: big.NewInt(674)},
+					Value: materiosMetadata.Pairs[0].Value,
+				},
+			}},
+			expected: false,
+		},
+		{
+			name: "materios label without marker",
+			metadata: lcommon.MetaMap{Pairs: []lcommon.MetaPair{
+				{
+					Key: lcommon.MetaInt{Value: big.NewInt(8746)},
+					Value: lcommon.MetaMap{Pairs: []lcommon.MetaPair{
+						{
+							Key:   lcommon.MetaText{Value: "v"},
+							Value: lcommon.MetaText{Value: "other"},
+						},
+					}},
+				},
+			}},
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := isMateriosMetadata(tt.metadata)
+			if result != tt.expected {
+				t.Errorf("isMateriosMetadata() = %v, want %v", result, tt.expected)
+			}
+		})
 	}
 }
 
