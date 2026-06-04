@@ -231,20 +231,6 @@ func (c *Config) populateNetworkMagic() error {
 
 func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 	cfg := GetConfig()
-	// gouroboros closes the error channel it's given during shutdown, so we
-	// must never hand it the shared errorChan directly — doing so would close
-	// it and cause a "send on closed channel" panic on the next connection.
-	// Instead give each connection its own channel and relay errors out.
-	connErrorChan := make(chan error, 10)
-	oConn, err := ouroboros.NewConnection(
-		ouroboros.WithNetworkMagic(uint32(cfg.Node.NetworkMagic)),
-		ouroboros.WithErrorChan(connErrorChan),
-		ouroboros.WithNodeToNode(false),
-		ouroboros.WithKeepAlive(true),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failure creating ouroboros connection: %w", err)
-	}
 	retries := int(cfg.App.Retries)
 	var lastErr error
 	for attempt := 0; attempt <= retries; attempt++ {
@@ -262,6 +248,19 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 			)
 			time.Sleep(delay)
 		}
+		// gouroboros closes the error channel it's given during shutdown, so we
+		// must never hand it the shared errorChan directly. A fresh connection
+		// per retry also avoids re-dialing a half-open connection after EOF.
+		connErrorChan := make(chan error, 10)
+		oConn, err := ouroboros.NewConnection(
+			ouroboros.WithNetworkMagic(uint32(cfg.Node.NetworkMagic)),
+			ouroboros.WithErrorChan(connErrorChan),
+			ouroboros.WithNodeToNode(false),
+			ouroboros.WithKeepAlive(true),
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failure creating ouroboros connection: %w", err)
+		}
 		if cfg.Node.Address != "" && cfg.Node.Port > 0 {
 			err = oConn.Dial(
 				"tcp",
@@ -278,6 +277,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 					attempt,
 				)
 				lastErr = err
+				oConn.Close()
 				continue
 			}
 		} else if cfg.Node.SocketPath != "" {
@@ -285,9 +285,11 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 			if err != nil {
 				slog.Warn("Failed to connect via UNIX socket", "path", cfg.Node.SocketPath, "error", err, "attempt", attempt)
 				lastErr = err
+				oConn.Close()
 				continue
 			}
 		} else {
+			oConn.Close()
 			return nil, errors.New("specify either the UNIX socket path or the address/port")
 		}
 		slog.Info("Successfully connected to node")
@@ -354,6 +356,9 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 		// Check if Tx has metadata and compare against our list
 		if tx.Metadata() != nil {
 			mdCbor := tx.Metadata().Cbor()
+			if isMateriosMetadata(tx.Metadata()) {
+				icon = "Ⓜ️"
+			}
 			var msgMetadata models.Cip20Metadata
 			_ = cbor.Unmarshal(mdCbor, &msgMetadata)
 			if msgMetadata.Num674.Msg != nil {
@@ -565,6 +570,57 @@ func GetTransactions(oConn *ouroboros.Connection) string {
 	return sb.String()
 }
 
+func isMetaInt(m lcommon.TransactionMetadatum, value int64) bool {
+	metaInt, ok := m.(lcommon.MetaInt)
+	return ok && metaInt.Value != nil && metaInt.Value.Int64() == value
+}
+
+func isMetaText(m lcommon.TransactionMetadatum, value string) bool {
+	metaText, ok := m.(lcommon.MetaText)
+	return ok && metaText.Value == value
+}
+
+func isMateriosMetadata(m lcommon.TransactionMetadatum) bool {
+	metaMap, ok := m.(lcommon.MetaMap)
+	if !ok {
+		return false
+	}
+	for _, pair := range metaMap.Pairs {
+		if isMetaInt(pair.Key, 8746) && hasMateriosMarker(pair.Value) {
+			return true
+		}
+	}
+	return false
+}
+
+func hasMateriosMarker(m lcommon.TransactionMetadatum) bool {
+	switch meta := m.(type) {
+	case lcommon.MetaList:
+		for _, item := range meta.Items {
+			if hasMateriosMarker(item) {
+				return true
+			}
+		}
+	case lcommon.MetaMap:
+		hasProtocolKey := false
+		hasMateriosValue := false
+		for _, pair := range meta.Pairs {
+			switch {
+			case isMetaText(pair.Key, "k") && isMetaText(pair.Value, "p"):
+				hasProtocolKey = true
+			case isMetaText(pair.Key, "v") && isMetaText(pair.Value, "materios"):
+				hasMateriosValue = true
+			default:
+				if hasMateriosMarker(pair.Value) {
+					return true
+				}
+			}
+		}
+		return hasProtocolKey && hasMateriosValue
+	}
+	return false
+}
+
 func initializeData(errorChan chan error) {
 	oConn, err := GetConnection(errorChan)
 	if err != nil {
@@ -628,6 +684,7 @@ func buildLegendText() string {
 			{icon: "🏊", label: "SPOs"},
 			{icon: "🏛️", label: "Governance"},
 			{icon: "💲", label: "AdaHandle"},
+			{icon: "Ⓜ️", label: "Materios"},
 		},
 	}
 
