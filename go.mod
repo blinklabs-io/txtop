@@ -1,8 +1,8 @@
 module github.com/blinklabs-io/txtop
 
-go 1.24.0
+go 1.25.7
 
-toolchain go1.24.4
+toolchain go1.25.8
 
 require (
 	github.com/blinklabs-io/cardano-models v0.7.0
