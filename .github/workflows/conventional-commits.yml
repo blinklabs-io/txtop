@@ -1,19 +1,9 @@
-# The below is pulled from upstream and slightly modified
-# https://github.com/webiny/action-conventional-commits/blob/master/README.md#usage
-
-name: Conventional Commits
+# Generated automatically by org-governance-bot. Do not edit manually.
+name: "Conventional Commits"
 
 on:
   pull_request:
 
 jobs:
-  build:
-    name: Conventional Commits
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 https://github.com/actions/checkout/releases/tag/v6.0.3
-        with:
-          persist-credentials: false
-      - uses: webiny/action-conventional-commits@7f91b1595ca1951cdb671ddc9f07a49081ec5b69 # v1.4.2 https://github.com/webiny/action-conventional-commits/releases/tag/v1.4.2
+  orchestrate:
+    uses: blinklabs-io/actions/.github/workflows/reuseable-conventional-commits.yml@main
