@@ -1,27 +1,17 @@
-name: nilaway
+# Generated automatically by org-governance-bot. Do not edit manually.
+name: "nilaway"
+
 on:
+  pull_request:
   push:
-    tags:
-      - v*
     branches:
       - main
-  pull_request:
-
-permissions:
-  contents: read
+    tags:
+      - v*
 
 jobs:
-  nilaway:
-    name: nilaway
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 https://github.com/actions/checkout/releases/tag/v6.0.3
-        with:
-          persist-credentials: false
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0 https://github.com/actions/setup-go/releases/tag/v6.0.0
-        with:
-          go-version: 1.26.x
-      - name: install nilaway
-        run: go install go.uber.org/nilaway/cmd/nilaway@latest
-      - name: run nilaway
-        run: nilaway ./...
+  orchestrate:
+    uses: blinklabs-io/actions/.github/workflows/reuseable-nilaway.yml@main
+    with:
+      go-version: 1.26.x
+      include-pkgs: github.com/blinklabs-io/txtop
