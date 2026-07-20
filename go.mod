@@ -6,7 +6,7 @@ toolchain go1.25.8
 
 require (
 	github.com/blinklabs-io/cardano-models v0.7.2
-	github.com/blinklabs-io/gouroboros v0.187.3
+	github.com/blinklabs-io/gouroboros v0.188.0
 	github.com/fxamacker/cbor/v2 v2.9.2
 	github.com/gdamore/tcell/v2 v2.13.10
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -41,9 +41,9 @@ require (
 	github.com/minio/sha256-simd v1.0.1 // indirect
 	github.com/utxorpc/go-codegen v0.19.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/crypto v0.53.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
-	golang.org/x/term v0.44.0 // indirect
-	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/crypto v0.54.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/term v0.45.0 // indirect
+	golang.org/x/text v0.40.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
