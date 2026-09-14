@@ -4,10 +4,10 @@ github.com/bits-and-blooms/bitset v1.24.6 h1:qcrftZUVBIwfs+m+nhoCBAPT+ZPZZjti8Sb
 github.com/bits-and-blooms/bitset v1.24.6/go.mod h1:7hO7Gc7Pp1vODcmWvKMRA9BNmbv6a/7QIWpPxHddWR8=
 github.com/blinklabs-io/cardano-models v0.7.2 h1:5Cg/IpY2Bg/l3grBhfdxtgBXAUVJxBqGLDjhIinN61o=
 github.com/blinklabs-io/cardano-models v0.7.2/go.mod h1:/I+h+cLcruzj9LlWcYSs2k8+ThmvvEGlr9SHRnLzWpE=
-github.com/blinklabs-io/gouroboros v0.202.7 h1:XIM5nk5zv/ZQ/ntNIZfQs5JtoDb74IW3CnEK2JIIXu0=
-github.com/blinklabs-io/gouroboros v0.202.7/go.mod h1:W7P6EkHff/4rbEPdtJVcjxvlbDFfbXWTUGoZqoioh4g=
-github.com/blinklabs-io/ouroboros-mock v0.17.0 h1:rDvBsfz0EEo5UEC/DmskQcTL7JgbABQsuttBbPxVIrk=
-github.com/blinklabs-io/ouroboros-mock v0.17.0/go.mod h1:b62AMGYgh3oFZAi2v9gCEbqy0h+pz8SnY8KyL6tADoM=
+github.com/blinklabs-io/gouroboros v0.204.0 h1:z3N2A+4UqERe5A8Okw5m650GKNOQkrZjzAYmUZIFyvQ=
+github.com/blinklabs-io/gouroboros v0.204.0/go.mod h1:QUrXbiy0I3EIYj2T7w+P3RUSbp3GwW7Yh5bhfaA286o=
+github.com/blinklabs-io/ouroboros-mock v0.19.0 h1:f4ej1znSUxCNWfPW6asOd/+mjxBwtMzYAw8nmHHuvtw=
+github.com/blinklabs-io/ouroboros-mock v0.19.0/go.mod h1:CrsKaqRA5cBXYEoMZR+erL2pEp/rbdkvnzNv1wWEeA4=
 github.com/blinklabs-io/plutigo v0.5.0 h1:qDb6ADY5f0LWfQBdr3tZTYGqJGgFdmDQI/iyjSz8CJs=
 github.com/blinklabs-io/plutigo v0.5.0/go.mod h1:ceskOZD5ZkkxhctkfvzRe3XEYdOzFYoxp11RqiG6oeU=
 github.com/btcsuite/btcd/btcec/v2 v2.5.0 h1:KioMXOWa76b86sTZZOmbzv/ldaQCmB8KFAyn5PbB8E8=
