@@ -7,7 +7,7 @@ toolchain go1.25.8
 require (
 	github.com/blinklabs-io/cardano-models v0.7.2
 	github.com/blinklabs-io/gouroboros v0.204.0
-	github.com/fxamacker/cbor/v2 v2.9.3
+	github.com/fxamacker/cbor/v2 v2.9.4
 	github.com/gdamore/tcell/v2 v2.13.10
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.42.0
