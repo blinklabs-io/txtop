@@ -645,6 +645,8 @@ func TestIconFromCip20Messages(t *testing.T) {
 		{"sundae", []string{"SSP: Swap Request"}, "🍨"},
 		{"steelswap after another line", []string{"CarDeM", "SteelSwap: 1.18.0"}, "🧱"},
 		{"steelswap first line", []string{"SteelSwap: 2.0.0"}, "🧱"},
+		{"steelswap after dexhunter", []string{"Dexhunter Trade", "SteelSwap: 1.18.0"}, "🧱"},
+		{"steelswap after minswap", []string{"Minswap: Swap Exact In Order", "SteelSwap: 1.18.0"}, "🧱"},
 		{"steelswap without prefix", []string{"not SteelSwap"}, ""},
 		{"only first line considered", []string{"unknown", "Dexhunter Trade"}, ""},
 		{"unknown", []string{"hello world"}, ""},

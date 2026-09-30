@@ -1105,6 +1105,14 @@ func iconFromCip20Messages(msgs []string) string {
 	if len(msgs) == 0 {
 		return ""
 	}
+	// SteelSwap follows another line (e.g. "CarDeM") and carries a version
+	// suffix, so match the prefix on any line, ahead of the first-line
+	// protocols below.
+	for _, msg := range msgs {
+		if strings.HasPrefix(msg, "SteelSwap:") {
+			return "🧱"
+		}
+	}
 	switch msgs[0] {
 	case "Dexhunter Trade":
 		return "🏹"
@@ -1127,13 +1135,6 @@ func iconFromCip20Messages(msgs []string) string {
 		return "🐱"
 	case "SSP: Swap Request":
 		return "🍨"
-	}
-	// SteelSwap follows another line (e.g. "CarDeM") and carries a version
-	// suffix, so match the prefix on any line rather than the first exactly.
-	for _, msg := range msgs {
-		if strings.HasPrefix(msg, "SteelSwap:") {
-			return "🧱"
-		}
 	}
 	return ""
 }
