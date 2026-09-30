@@ -184,7 +184,7 @@ type NodeConfig struct {
 func (c *Config) Load(configFile string) error {
 	// Load config file as YAML if provided
 	if configFile != "" {
-		buf, err := os.ReadFile(filepath.Clean(configFile))
+		buf, err := os.ReadFile(filepath.Clean(configFile)) //nolint:gosec // G703: operator-supplied config path
 		if err != nil {
 			return fmt.Errorf("error reading config file: %w", err)
 		}
@@ -863,6 +863,7 @@ var protocolLabels = map[string]string{
 	"Ⓜ️": "Materios",
 	"🕺":  "Silk Toad",
 	"🔵":  "VyFinance",
+	"🧱":  "SteelSwap",
 }
 
 // protocolLabelForIcon returns the protocol name for a detected icon, or "" if
@@ -1103,6 +1104,14 @@ func certTypeNames(certs []lcommon.Certificate) []string {
 func iconFromCip20Messages(msgs []string) string {
 	if len(msgs) == 0 {
 		return ""
+	}
+	// SteelSwap follows another line (e.g. "CarDeM") and carries a version
+	// suffix, so match the prefix on any line, ahead of the first-line
+	// protocols below.
+	for _, msg := range msgs {
+		if strings.HasPrefix(msg, "SteelSwap:") {
+			return "🧱"
+		}
 	}
 	switch msgs[0] {
 	case "Dexhunter Trade":
