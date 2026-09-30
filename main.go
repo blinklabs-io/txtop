@@ -863,6 +863,7 @@ var protocolLabels = map[string]string{
 	"Ⓜ️": "Materios",
 	"🕺":  "Silk Toad",
 	"🔵":  "VyFinance",
+	"🧱":  "SteelSwap",
 }
 
 // protocolLabelForIcon returns the protocol name for a detected icon, or "" if
@@ -1126,6 +1127,13 @@ func iconFromCip20Messages(msgs []string) string {
 		return "🐱"
 	case "SSP: Swap Request":
 		return "🍨"
+	}
+	// SteelSwap follows another line (e.g. "CarDeM") and carries a version
+	// suffix, so match the prefix on any line rather than the first exactly.
+	for _, msg := range msgs {
+		if strings.HasPrefix(msg, "SteelSwap:") {
+			return "🧱"
+		}
 	}
 	return ""
 }

@@ -15,6 +15,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"math/big"
 	"math/rand"
@@ -24,6 +25,7 @@ import (
 	"testing"
 
 	lcommon "github.com/blinklabs-io/gouroboros/ledger/common"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/rivo/tview"
 	"github.com/rivo/uniseg"
 )
@@ -527,6 +529,7 @@ func TestProtocolLabelForIcon(t *testing.T) {
 	}{
 		{"🏹", "Dexhunter"},
 		{"🐱", "Minswap"},
+		{"🧱", "SteelSwap"}, // detected but absent from the legend
 		{"🕺", "Silk Toad"}, // detected but absent from the legend
 		{"🔵", "VyFinance"}, // detected but absent from the legend
 		{"👁️ ", "Indigo"},  // detection icon has a trailing space
@@ -640,6 +643,9 @@ func TestIconFromCip20Messages(t *testing.T) {
 		{"dexhunter", []string{"Dexhunter Trade"}, "🏹"},
 		{"minswap swap", []string{"Minswap: Swap Exact In Order"}, "🐱"},
 		{"sundae", []string{"SSP: Swap Request"}, "🍨"},
+		{"steelswap after another line", []string{"CarDeM", "SteelSwap: 1.18.0"}, "🧱"},
+		{"steelswap first line", []string{"SteelSwap: 2.0.0"}, "🧱"},
+		{"steelswap without prefix", []string{"not SteelSwap"}, ""},
 		{"only first line considered", []string{"unknown", "Dexhunter Trade"}, ""},
 		{"unknown", []string{"hello world"}, ""},
 	}
@@ -658,6 +664,86 @@ func TestExtractTxMalformed(t *testing.T) {
 	_, err := extractTx([]byte{0x00, 0x01, 0x02, 0x03})
 	if err == nil {
 		t.Fatal("extractTx(garbage) returned nil error, want error")
+	}
+}
+
+// txCborWithMessages builds a minimal Conway transaction whose auxiliary data
+// carries a CIP-20 (label 674) message.
+func txCborWithMessages(t *testing.T, msgs []string) []byte {
+	t.Helper()
+	body := map[uint]any{
+		0: []any{[]any{make([]byte, 32), uint(0)}},
+		1: []any{[]any{append([]byte{0x61}, make([]byte, 28)...), uint(1000000)}},
+		2: uint(200000),
+	}
+	auxData := map[uint]any{674: map[string]any{"msg": msgs}}
+	raw, err := cbor.Marshal([]any{body, map[uint]any{}, true, auxData})
+	if err != nil {
+		t.Fatalf("marshal tx: %v", err)
+	}
+	return raw
+}
+
+func TestExtractTxSteelSwapIcon(t *testing.T) {
+	tests := []struct {
+		name string
+		msgs []string
+		want string
+	}{
+		{"steelswap", []string{"CarDeM", "SteelSwap: 1.18.0"}, "🧱"},
+		{"other version", []string{"CarDeM", "SteelSwap: 2.0.0"}, "🧱"},
+		{"unrelated message", []string{"hello world"}, ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tx, err := extractTx(txCborWithMessages(t, tt.msgs))
+			if err != nil {
+				t.Fatalf("extractTx() error = %v", err)
+			}
+			if tx.Icon != tt.want {
+				t.Errorf("extractTx() icon = %q, want %q", tx.Icon, tt.want)
+			}
+		})
+	}
+}
+
+// TestExtractTxRealSteelSwapTransaction decodes an unmodified mainnet
+// transaction (c78c995f40885f82eae2e3a5af498bcb805adf6737d8aab10788bfac20ecb239) whose label-674 message is
+// ["CarDeM", "SteelSwap: 1.18.0"].
+func TestExtractTxRealSteelSwapTransaction(t *testing.T) {
+	raw, err := hex.DecodeString(
+		"84a500d901028182582016a66157e4444eea03a3832cbcc581f872d8f065cdfe" +
+			"042acfbcbf2a7038e0f7000182a300581d71c134d839a64a5dfb9b155869ef3f" +
+			"34280751a622f69958baa8ffd29c011a1e0a6e00028201d81858f1d8799f1a00" +
+			"1e8480d8799fd8799f581ccbb7479da4fee934d6cad1c741ec1db1763f14ccc9" +
+			"1ee20855a90c52ffd8799fd8799fd8799f581c2ce46b16000844a172a4126878" +
+			"954ef93d9c533f0e6a254793cd3babffffffffd8799fd8799f581ccbb7479da4" +
+			"fee934d6cad1c741ec1db1763f14ccc91ee20855a90c52ffd8799fd8799fd879" +
+			"9f581c2ce46b16000844a172a4126878954ef93d9c533f0e6a254793cd3babff" +
+			"ffffff40d879801b000001a818ffd4374040581c8db269c3ec630e06ae29f74b" +
+			"c39edd1f87c819f1056206e879a1cd614c446a65644d6963726f555344d8799f" +
+			"d879801a07a5c781ff0101ff82583901cbb7479da4fee934d6cad1c741ec1db1" +
+			"763f14ccc91ee20855a90c522ce46b16000844a172a4126878954ef93d9c533f" +
+			"0e6a254793cd3bab1a03310085021a0002c519031a0bd9b50c0758203b308c14" +
+			"8cd78090ef1c8e41e30f288b4c04df1a2296fd1c89b320d120bb4975a1008182" +
+			"58203b326825653beddb6d706ed19638e4a5482e035683bd6c246e67d0c1edcd" +
+			"ad415840a367d31c47a2db16272f009ca01ab7432509a36085d7709c3489f184" +
+			"f7b9826336eb78a38be2da05a742d435dda35a11dfef491e55a37761fd150313" +
+			"1d016506f5d90103a100a11902a2a1636d7367826643617244654d7153746565" +
+			"6c537761703a20312e31382e30",
+	)
+	if err != nil {
+		t.Fatalf("decode fixture: %v", err)
+	}
+	tx, err := extractTx(raw)
+	if err != nil {
+		t.Fatalf("extractTx() error = %v", err)
+	}
+	if tx.Icon != "🧱" {
+		t.Errorf("extractTx() icon = %q, want %q", tx.Icon, "🧱")
+	}
+	if got := protocolLabelForIcon(tx.Icon); got != "SteelSwap" {
+		t.Errorf("protocol label = %q, want SteelSwap", got)
 	}
 }
 
