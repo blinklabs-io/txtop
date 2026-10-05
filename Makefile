@@ -6,6 +6,9 @@ GO_FILES=$(shell find $(ROOT_DIR) -name '*.go')
 
 # Gather list of expected binaries
 BINARIES=txtop
+GOOS ?= $(shell go env GOOS)
+BINARY_SUFFIX := $(if $(filter windows,$(GOOS)),.exe,)
+BINARY_OUTPUTS := $(addsuffix $(BINARY_SUFFIX),$(BINARIES))
 
 # Set version strings based on git tag and current ref
 GO_LDFLAGS=-ldflags "-s -w -X 'main.Version=$(shell git describe --tags --exact-match 2>/dev/null)' -X 'main.CommitHash=$(shell git rev-parse --short HEAD)'"
@@ -15,14 +18,14 @@ GO_LDFLAGS=-ldflags "-s -w -X 'main.Version=$(shell git describe --tags --exact-
 all: format build
 
 # Alias for building program binary
-build: $(BINARIES)
+build: $(BINARY_OUTPUTS)
 
 mod-tidy:
 	# Needed to fetch new dependencies and add them to go.mod
 	go mod tidy
 
 clean:
-	rm -f $(BINARIES)
+	rm -f $(BINARIES) $(addsuffix .exe,$(BINARIES))
 
 format: mod-tidy
 	go fmt ./...
@@ -36,7 +39,7 @@ test: mod-tidy
 
 # Build our program binaries
 # Depends on GO_FILES to determine when rebuild is needed
-$(BINARIES): mod-tidy $(GO_FILES)
+$(BINARY_OUTPUTS): mod-tidy $(GO_FILES)
 	CGO_ENABLED=0 go build \
 		$(GO_LDFLAGS) \
-		-o $(@)$(if $(filter windows,$(GOOS)),.exe,) .
+		-o $(@) .
