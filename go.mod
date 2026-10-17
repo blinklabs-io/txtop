@@ -5,7 +5,7 @@ go 1.26.5
 require (
 	github.com/blinklabs-io/cardano-models v0.7.2
 	github.com/blinklabs-io/gouroboros v0.208.5
-	github.com/fxamacker/cbor/v2 v2.9.4
+	github.com/fxamacker/cbor/v2 v2.9.6
 	github.com/gdamore/tcell/v2 v2.13.10
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rivo/tview v0.42.0
