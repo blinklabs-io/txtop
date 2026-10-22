@@ -4,7 +4,7 @@ go 1.26.10
 
 require (
 	github.com/blinklabs-io/cardano-models v0.7.2
-	github.com/blinklabs-io/gouroboros v0.208.5
+	github.com/blinklabs-io/gouroboros v0.213.7
 	github.com/fxamacker/cbor/v2 v2.9.6
 	github.com/gdamore/tcell/v2 v2.13.10
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -15,13 +15,13 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.2.0 // indirect
-	github.com/bits-and-blooms/bitset v1.24.6 // indirect
-	github.com/blinklabs-io/plutigo v0.7.2 // indirect
+	github.com/bits-and-blooms/bitset v1.25.0 // indirect
+	github.com/blinklabs-io/plutigo v0.9.7 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.5.0 // indirect
 	github.com/btcsuite/btcd/btcutil v1.2.0 // indirect
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.2.0 // indirect
 	github.com/btcsuite/btcd/chainhash/v2 v2.0.0 // indirect
-	github.com/consensys/gnark-crypto v0.21.0 // indirect
+	github.com/consensys/gnark-crypto v0.22.0 // indirect
 	github.com/decred/dcrd/crypto/blake256 v1.1.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
