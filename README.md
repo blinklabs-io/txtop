@@ -12,6 +12,7 @@ as an exposed socat.
 ## Global variables
 
 - `NETWORK` - Sets network and forces container defaults for `NETWORK` mode
+    (use `dijkstra` for DijkstraNet, network magic 6)
 - `REFRESH` - Sets how fast we refresh data (in seconds), defaults to 10
 - `RETRIES` - Sets how many retries before aborting (currently unused)
 
