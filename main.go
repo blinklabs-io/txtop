@@ -15,6 +15,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -244,6 +245,21 @@ func (c *Config) populateNetworkMagic() error {
 	return nil
 }
 
+// closeTimeout bounds how long closing a node connection waits for its
+// goroutines to finish.
+const closeTimeout = 10 * time.Second
+
+// closeConn closes oConn within closeTimeout. No protocol callbacks are
+// registered and no lock is held across a close, so waiting for the
+// connection to wind down cannot deadlock.
+func closeConn(oConn *ouroboros.Connection) {
+	ctx, cancel := context.WithTimeout(context.Background(), closeTimeout)
+	defer cancel()
+	if err := oConn.Close(ctx); err != nil {
+		slog.Warn("Failed to close connection", "error", err)
+	}
+}
+
 func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 	cfg := GetConfig()
 	retries := int(cfg.App.Retries)
@@ -292,7 +308,7 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 					attempt,
 				)
 				lastErr = err
-				oConn.Close()
+				closeConn(oConn)
 				continue
 			}
 		} else if cfg.Node.SocketPath != "" {
@@ -300,11 +316,11 @@ func GetConnection(errorChan chan error) (*ouroboros.Connection, error) {
 			if err != nil {
 				slog.Warn("Failed to connect via UNIX socket", "path", cfg.Node.SocketPath, "error", err, "attempt", attempt)
 				lastErr = err
-				oConn.Close()
+				closeConn(oConn)
 				continue
 			}
 		} else {
-			oConn.Close()
+			closeConn(oConn)
 			return nil, errors.New("specify either the UNIX socket path or the address/port")
 		}
 		slog.Info("Successfully connected to node")
@@ -521,7 +537,7 @@ func initializeData(errorChan chan error) {
 		summaryText.SetText(fmt.Sprintf(" [red]failed to connect to node: %s", err))
 		return
 	}
-	defer oConn.Close()
+	defer closeConn(oConn)
 	summaryText.SetText(GetSizes(oConn))
 	txs, err := buildTxs(oConn)
 	if err != nil {
@@ -733,7 +749,7 @@ func startRefreshLoop(cfg *Config, errorChan chan error) {
 				} else {
 					sizes := GetSizes(oConn)
 					txs, buildErr := buildTxs(oConn)
-					oConn.Close()
+					closeConn(oConn)
 					app.QueueUpdateDraw(func() {
 						// Re-check pause: the user may have paused mid-fetch; do
 						// not clobber the snapshot they are now browsing.
